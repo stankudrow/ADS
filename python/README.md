@@ -4,3 +4,6 @@
 
 - [Glossary](https://docs.python.org/3/glossary.html)
 - [Data model](https://docs.python.org/3/reference/datamodel.html)
+- typing:
+  - [Python docs typing module](https://docs.python.org/3/library/typing.html)
+  - [The `mypy` static type checker for Python](https://mypy.readthedocs.io/en/stable/index.html)
