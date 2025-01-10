@@ -1,0 +1,17 @@
+[project]
+name = "adspy"
+version = "0.1.0"
+description = "Algorithms and Data Structures in Python"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+lint = [
+    "ruff>=0.9.1",
+]
+test = [
+    "pytest>=8.3.4",
+    "pytest-random-order>=1.1.1",
+    "pytest-xdist>=3.6.1",
+]
