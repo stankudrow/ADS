@@ -41,6 +41,7 @@ skip-magic-trailing-comma = false  # respect magic trailing commas.
 extend-select = [
     "B",  # flake8-bugbear
     "Q",  # flake8-quotes
+    "T",  # flake8-print-linter
     "UP",  # pyupgrade
 ]
 
