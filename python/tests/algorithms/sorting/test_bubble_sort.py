@@ -1,8 +1,7 @@
 """Test the "Bubble sort" implementation(s)."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from operator import itemgetter
-from typing import Sequence
 
 import pytest
 
