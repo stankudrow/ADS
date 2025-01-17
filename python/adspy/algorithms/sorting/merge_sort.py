@@ -6,6 +6,7 @@ References:
 """
 
 from collections.abc import Callable, Sequence
+from typing import Any
 
 from adspy.algorithms.sorting.common import merge
 
@@ -44,6 +45,15 @@ def merge_sort(
         left_half = _merge_sort_rec(lst[:mid], key, reverse=reverse)
         right_half = _merge_sort_rec(lst[mid:], key, reverse=reverse)
         return merge(left_half, right_half, key, reverse=reverse)
+
+    def _default_key(arg: Any) -> Any:
+        return arg
+
+    if key is None:
+        key = _default_key
+    if not isinstance(key, Callable):
+        msg = f"{key} is not callable"
+        raise TypeError(msg)
 
     sorted_lst = _merge_sort_rec(list(seq), key=key, reverse=False)
     if reverse:
