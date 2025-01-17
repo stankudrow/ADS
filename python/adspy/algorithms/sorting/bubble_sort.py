@@ -12,6 +12,7 @@ from typing import Any
 def bubble_sort(
     seq: Sequence,
     key: None | Callable = None,
+    *,
     reverse: bool = False,
 ) -> list:
     """Returns the sorted list.
