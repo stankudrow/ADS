@@ -28,11 +28,15 @@ def selection_sort(
     list
     """
 
-    def _default_key(arg) -> Any:
+    def _default_key(arg: Any) -> Any:
         return arg
 
     if key is None:
         key = _default_key
+    if not isinstance(key, Callable):
+        msg = f"{key} is not callable"
+        raise TypeError(msg)
+
     lst = list(seq)
     size = len(lst)
     for idx in range(size):
