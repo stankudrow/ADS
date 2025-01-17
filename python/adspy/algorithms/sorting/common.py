@@ -47,3 +47,51 @@ def is_sorted(
         if not op(key(tup[idx - 1]), key(tup[idx])):
             return False
     return True
+
+
+def merge(
+    seq1: Sequence,
+    seq2: Sequence,
+    key: None | Callable = None,
+    *,
+    reverse: bool = False,
+) -> list:
+    """Returns the merged list of two sequences.
+
+    Parameters
+    ----------
+    seq1 : Sequence
+    seq2 : Sequence
+    key : None | Callable, default None
+    reverse : bool, default False
+
+    Returns
+    -------
+    list
+    """
+
+    def _default_key(arg: Any) -> Any:
+        return arg
+
+    if key is None:
+        key = _default_key
+    if not isinstance(key, Callable):
+        msg = f"{key} is not callable"
+        raise TypeError(msg)
+
+    merged = []
+    lst1, lst2 = map(list, (seq1, seq2))
+    len1, len2 = map(len, (lst1, lst2))
+    idx1, idx2 = 0, 0
+    while (idx1 < len1) and (idx2 < len2):
+        if key(seq1[idx1]) < key(seq2[idx2]):
+            merged.append(seq1[idx1])
+            idx1 += 1
+        else:
+            merged.append(seq2[idx2])
+            idx2 += 1
+    merged += seq1[idx1:]
+    merged += seq2[idx2:]
+    if reverse:
+        merged.reverse()
+    return merged

@@ -3,7 +3,10 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.common import is_sorted
+from adspy.algorithms.sorting.common import (
+    is_sorted,
+    merge,
+)
 
 
 @pytest.mark.parametrize(
@@ -43,3 +46,16 @@ def test_is_sorted(seq: Sequence, reverse: bool, strict: bool, ans: bool):
 )
 def test_is_sorted_key(seq: Sequence, key: None | Callable, ans: bool):
     assert is_sorted(tuple(seq), key=key) == ans
+
+
+@pytest.mark.parametrize(
+    ("seq1", "seq2", "ans"),
+    [
+        ([4, 1], [3, 2], [3, 2, 4, 1]),
+        ([], [3, 2], [3, 2]),
+        ([4, 1], [], [4, 1]),
+        ([], [], []),
+    ],
+)
+def test_merge(seq1: Sequence, seq2: Sequence, ans: Sequence):
+    assert merge(seq1=seq1, seq2=seq2) == ans
