@@ -69,7 +69,7 @@ def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
 def test_bubble_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
-    lst = tuple(seq)
+    lst = list(seq)
 
     result = bubble_sort(lst, key=key)
 

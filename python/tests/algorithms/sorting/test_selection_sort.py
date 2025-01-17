@@ -7,8 +7,8 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.selection_sort import selection_sort
 from adspy.algorithms.sorting.common import is_sorted
+from adspy.algorithms.sorting.selection_sort import selection_sort
 
 
 @pytest.mark.parametrize(
@@ -69,7 +69,7 @@ def test_selection_sort(seq: Sequence, key: None | Callable, reverse: bool):
 def test_selection_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
-    lst = tuple(seq)
+    lst = list(seq)
 
     result = selection_sort(lst, key=key)
 
