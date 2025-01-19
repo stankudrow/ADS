@@ -6,7 +6,12 @@ References:
 """
 
 from collections.abc import Callable, Sequence
+from operator import gt, lt
 from typing import Any
+
+
+def _default_key(arg: Any) -> Any:
+    return arg
 
 
 def insertion_sort(
@@ -28,9 +33,6 @@ def insertion_sort(
     list
     """
 
-    def _default_key(arg: Any) -> Any:
-        return arg
-
     if key is None:
         key = _default_key
     if not isinstance(key, Callable):
@@ -38,13 +40,14 @@ def insertion_sort(
         raise TypeError(msg)
 
     lst = list(seq)
-    for idx in range(1, len(lst)):
+    if (size := len(lst)) < 2:
+        return lst
+    op = lt if reverse else gt
+    for idx in range(1, size):
         curr = lst[idx]
         jdx = idx - 1
-        while jdx > -1 and key(lst[jdx]) > key(lst[jdx + 1]):
+        while jdx > -1 and op(key(lst[jdx]), key(lst[jdx + 1])):
             lst[jdx + 1], lst[jdx] = lst[jdx], lst[jdx + 1]
             jdx -= 1
         lst[jdx + 1] = curr
-    if reverse:
-        lst.reverse()
     return lst
