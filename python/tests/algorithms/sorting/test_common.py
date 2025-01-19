@@ -49,13 +49,19 @@ def test_is_sorted_key(seq: Sequence, key: None | Callable, ans: bool):
 
 
 @pytest.mark.parametrize(
-    ("seq1", "seq2", "ans"),
+    ("seq1", "seq2", "reverse", "ans"),
     [
-        ([4, 1], [3, 2], [3, 2, 4, 1]),
-        ([], [3, 2], [3, 2]),
-        ([4, 1], [], [4, 1]),
-        ([], [], []),
+        ([4, 1], [3, 2], False, [3, 2, 4, 1]),
+        ([], [3, 2], False, [3, 2]),
+        ([4, 1], [], False, [4, 1]),
+        ([1], [2], False, [1, 2]),
+        ([], [], False, []),
+        ([], [], True, []),
+        ([1, 2], [], True, [1, 2]),
+        ([], [3, 4], True, [3, 4]),
+        ([1], [2], True, [2, 1]),
+        ([2, 4], [3, 1], True, [3, 2, 4, 1]),
     ],
 )
-def test_merge(seq1: Sequence, seq2: Sequence, ans: Sequence):
-    assert merge(seq1=seq1, seq2=seq2) == ans
+def test_merge(seq1: Sequence, seq2: Sequence, reverse: bool, ans: list):
+    assert merge(seq1=seq1, seq2=seq2, reverse=reverse) == ans

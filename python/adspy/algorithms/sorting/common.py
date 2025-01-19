@@ -3,6 +3,10 @@ from operator import ge, gt, le, lt
 from typing import Any
 
 
+def _default_key(arg: Any) -> Any:
+    return arg
+
+
 def is_sorted(
     seq: Sequence,
     key: None | Callable = None,
@@ -23,9 +27,6 @@ def is_sorted(
     -------
     bool
     """
-
-    def _default_key(arg: Any) -> Any:
-        return arg
 
     if key is None:
         key = _default_key
@@ -56,7 +57,7 @@ def merge(
     *,
     reverse: bool = False,
 ) -> list:
-    """Returns the merged list of two sequences.
+    """Returns the merged list from two sequences.
 
     Parameters
     ----------
@@ -70,21 +71,20 @@ def merge(
     list
     """
 
-    def _default_key(arg: Any) -> Any:
-        return arg
-
     if key is None:
         key = _default_key
     if not isinstance(key, Callable):
         msg = f"{key} is not callable"
         raise TypeError(msg)
 
+    op = gt if reverse else lt
+
     merged = []
     lst1, lst2 = map(list, (seq1, seq2))
     len1, len2 = map(len, (lst1, lst2))
     idx1, idx2 = 0, 0
     while (idx1 < len1) and (idx2 < len2):
-        if key(seq1[idx1]) < key(seq2[idx2]):
+        if op(key(seq1[idx1]), key(seq2[idx2])):
             merged.append(seq1[idx1])
             idx1 += 1
         else:
@@ -92,6 +92,4 @@ def merge(
             idx2 += 1
     merged += seq1[idx1:]
     merged += seq2[idx2:]
-    if reverse:
-        merged.reverse()
     return merged
