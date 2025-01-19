@@ -10,6 +10,10 @@ from operator import gt, lt
 from typing import Any
 
 
+def _default_key(arg: Any) -> Any:
+    return arg
+
+
 def bubble_sort(
     seq: Sequence,
     key: None | Callable = None,
@@ -29,9 +33,6 @@ def bubble_sort(
     list
     """
 
-    def _default_key(arg: Any) -> Any:
-        return arg
-
     if key is None:
         key = _default_key
     if not isinstance(key, Callable):
@@ -39,7 +40,7 @@ def bubble_sort(
         raise TypeError(msg)
 
     lst = list(seq)
-    if (size := len(lst)) < 1:
+    if (size := len(lst)) < 2:
         return lst
     op = lt if reverse else gt
     while True:
