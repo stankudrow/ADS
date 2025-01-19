@@ -6,6 +6,7 @@ References:
 """
 
 from collections.abc import Callable, Sequence
+from operator import gt, lt
 from typing import Any
 
 
@@ -38,14 +39,16 @@ def selection_sort(
         raise TypeError(msg)
 
     lst = list(seq)
-    size = len(lst)
+    if (size := len(lst)) < 1:
+        return lst
+    op = gt if reverse else lt
     for idx in range(size):
         imin = idx
         for jdx in range(idx + 1, size):
-            if key(lst[jdx]) < key(lst[imin]):
+            if op(key(lst[jdx]), key(lst[imin])):
                 imin = jdx
         if imin != idx:
             lst[idx], lst[imin] = lst[imin], lst[idx]
-    if reverse:
-        lst.reverse()
+    # if reverse:
+    #     lst.reverse()
     return lst
