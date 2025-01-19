@@ -18,6 +18,7 @@ from adspy.algorithms.sorting.merge_sort import merge_sort
         [1],
         (2, 0, 1),
         {2, 4, 3, 1},
+        [2, 3, 1, 1, 5],
     ],
 )
 @pytest.mark.parametrize(
