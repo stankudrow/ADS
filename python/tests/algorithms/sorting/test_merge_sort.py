@@ -56,7 +56,7 @@ def test_merge_sort(seq: Sequence, key: None | Callable, reverse: bool):
         pytest.param(
             (0, 1, -1),
             abs,
-            does_not_raise(),  # pytest.raises(AssertionError),
+            does_not_raise(),
             marks=pytest.mark.xfail(reason="key failed to sort"),
         ),
         pytest.param(
