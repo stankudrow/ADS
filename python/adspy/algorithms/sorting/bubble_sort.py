@@ -6,6 +6,7 @@ References:
 """
 
 from collections.abc import Callable, Sequence
+from operator import gt, lt
 from typing import Any
 
 
@@ -38,16 +39,16 @@ def bubble_sort(
         raise TypeError(msg)
 
     lst = list(seq)
-    size = len(lst)
+    if (size := len(lst)) < 1:
+        return lst
+    op = lt if reverse else gt
     while True:
         swapped = False
         for idx in range(1, size):
-            if key(lst[idx - 1]) > key(lst[idx]):
+            if op(key(lst[idx - 1]), key(lst[idx])):
                 lst[idx - 1], lst[idx] = lst[idx], lst[idx - 1]
                 swapped = True
         if not swapped:
             break
         size -= 1
-    if reverse:
-        lst.reverse()
     return lst
