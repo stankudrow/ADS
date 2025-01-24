@@ -38,12 +38,15 @@ quote-style = "double"
 skip-magic-trailing-comma = false  # respect magic trailing commas.
 
 [tool.ruff.lint]
-extend-select = [
+select = [
     "B",  # flake8-bugbear
+    "ERA",  # eradicate
+    "I",  # isort
     "Q",  # flake8-quotes
     "T",  # flake8-print-linter
     "UP",  # pyupgrade
 ]
+fixable = ["I"]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]
