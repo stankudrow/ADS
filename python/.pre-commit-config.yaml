@@ -9,6 +9,6 @@ repos:
   - id: ruff-check
     alias: lint
     name: "ruff check files.py"
-    language: system
+    language: python
     entry: ruff check .
     verbose: true
