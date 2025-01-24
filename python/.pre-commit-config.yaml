@@ -10,7 +10,7 @@ repos:
     alias: lint
     name: "ruff check files.py"
     language: python
-    entry: ruff check .
+    entry: ruff check
     verbose: true
 - repo: local
   hooks:
@@ -18,5 +18,5 @@ repos:
     alias: format
     name: "ruff format files.py"
     language: python
-    entry: ruff format .
+    entry: ruff format --check
     verbose: true
