@@ -1,7 +1,7 @@
 default_language_version:
   python: python3.12
 fail_fast: true
-files: ^adspy/.*\.py$  # must be valid Python regex
+files: '^adspy/.*\.py$'  # must be a valid Python regex
 minimum_pre_commit_version: '4'  # string expected
 repos:
 - repo: local
@@ -9,6 +9,6 @@ repos:
   - id: ruff-check
     alias: lint
     name: "ruff check files.py"
-    language: system  # ???
+    language: system
     entry: ruff check .
     verbose: true
