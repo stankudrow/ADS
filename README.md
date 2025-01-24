@@ -2,12 +2,6 @@
 
 Algorithms and Data Structures.
 
-## Common
-
-### pre-commit
-
-[Pre-commit](https://pre-commit.com/) is a framework for managing and maintaining multi-language pre-commit [(git) hooks](https://git-scm.com/docs/githooks).
-
 ## Languages
 
 The focus falls on the following languages:
