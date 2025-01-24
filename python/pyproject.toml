@@ -40,6 +40,7 @@ skip-magic-trailing-comma = false  # respect magic trailing commas.
 [tool.ruff.lint]
 select = [
     "B",  # flake8-bugbear
+    "ERA",  # eradicate
     "I",  # isort
     "Q",  # flake8-quotes
     "T",  # flake8-print-linter
