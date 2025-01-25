@@ -1,4 +1,4 @@
-"""The "Linear search" algorithm.
+"""The "Binary search" algorithm.
 
 References:
 
@@ -12,6 +12,8 @@ from typing import Any
 def binary_search(it: Iterable, value: Any) -> None | int:
     """Returns the index of the first occurence of the `value`.
 
+    The `it`erable must be already sorted,
+    no sorting is done under the hood.
     If None, then the `value` was not found in the `it`erable.
 
     Parameters

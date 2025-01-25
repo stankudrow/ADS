@@ -16,6 +16,14 @@ from adspy.algorithms.searching.binary_search import binary_search
         ((2, 1), 2, 0),
         ((1, 2, 2), 2, 1),
         ((1, 2, 2, 2), 2, 1),
+        pytest.param(
+            (2, 1, 3, 5, 4, 0),
+            4,
+            None,
+            marks=pytest.mark.xfail(
+                reason="an unsorted iterable for binary search"
+            ),
+        ),
     ],
 )
 def test_binary_search(it: Iterable, elem: Any, ans: None | int):
