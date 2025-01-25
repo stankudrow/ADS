@@ -4,6 +4,27 @@ version = "0.1.0"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
 requires-python = ">=3.12"
+keywords = ["python", "algorithms", "data structures"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Other Audience",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Typing :: Typed",
+]
 dependencies = []
 
 [dependency-groups]
