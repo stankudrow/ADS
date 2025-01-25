@@ -15,6 +15,22 @@ def _default_key(arg: Any) -> Any:
     return arg
 
 
+def _merge_sort(
+    lst: list,
+    key: Callable | None = None,
+    *,
+    reverse: bool = False,
+) -> list:
+    """The actual recursive implementation."""
+
+    if (size := len(lst)) < 2:
+        return lst
+    mid = size // 2
+    left_half = _merge_sort(lst[:mid], key, reverse=reverse)
+    right_half = _merge_sort(lst[mid:], key, reverse=reverse)
+    return merge(left_half, right_half, key, reverse=reverse)
+
+
 def merge_sort(
     seq: Sequence,
     key: None | Callable = None,
@@ -34,21 +50,6 @@ def merge_sort(
     list
     """
 
-    def _merge_sort_rec(
-        lst: list,
-        key: Callable | None = None,
-        *,
-        reverse: bool = False,
-    ) -> list:
-        """The actual recursive implementation."""
-
-        if (size := len(lst)) < 2:
-            return lst
-        mid = size // 2
-        left_half = _merge_sort_rec(lst[:mid], key, reverse=reverse)
-        right_half = _merge_sort_rec(lst[mid:], key, reverse=reverse)
-        return merge(left_half, right_half, key, reverse=reverse)
-
     if key is None:
         key = _default_key
     if not isinstance(key, Callable):
@@ -57,5 +58,5 @@ def merge_sort(
 
     lst = list(seq)
     if len(lst) > 1:
-        lst = _merge_sort_rec(lst, key=key, reverse=reverse)
+        lst = _merge_sort(lst, key=key, reverse=reverse)
     return lst
