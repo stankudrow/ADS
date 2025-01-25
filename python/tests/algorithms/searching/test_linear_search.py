@@ -11,8 +11,10 @@ from adspy.algorithms.searching.linear_search import linear_search
     [
         ([], 21, None),
         ([1, 2], 42, None),
+        ((1, 2), 1, 0),
         ((1, 2), 2, 1),
         ((2, 1), 2, 0),
+        ((1, 2, 2, 2), 2, 1),
     ],
 )
 def test_linear_search(it: Iterable, elem: Any, ans: None | int):
