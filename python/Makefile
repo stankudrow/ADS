@@ -10,5 +10,5 @@ format:
 lint: format
 	ruff check --fix .
 
-test: check
+test:
 	pytest tests
