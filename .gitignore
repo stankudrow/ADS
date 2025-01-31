@@ -1,0 +1,7 @@
+# Python
+
+## pytest
+.pytest_cache
+
+## ruff stuff
+.ruff_cache

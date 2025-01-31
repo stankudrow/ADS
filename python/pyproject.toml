@@ -3,17 +3,36 @@ name = "adspy"
 version = "0.1.0"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
+keywords = ["python", "algorithms", "data structures"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Other Audience",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Typing :: Typed",
+]
 dependencies = []
 
-[dependency-groups]
-lint = [
-    "ruff>=0.9.1",
-]
-test = [
+[project.optional-dependencies]
+dev = [
     "pytest>=8.3.4",
     "pytest-random-order>=1.1.1",
     "pytest-xdist>=3.6.1",
+    "ruff>=0.9.4",
 ]
 
 [tool.pytest.ini_options]
@@ -28,7 +47,7 @@ verbosity_test_cases = 3
 indent-width = 4
 line-length = 80
 show-fixes = true
-target-version = "py312"
+target-version = "py310"
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -38,12 +57,15 @@ quote-style = "double"
 skip-magic-trailing-comma = false  # respect magic trailing commas.
 
 [tool.ruff.lint]
-extend-select = [
+select = [
     "B",  # flake8-bugbear
+    "ERA",  # eradicate
+    "I",  # isort
     "Q",  # flake8-quotes
     "T",  # flake8-print-linter
     "UP",  # pyupgrade
 ]
+fixable = ["I"]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]
