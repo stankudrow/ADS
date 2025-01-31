@@ -1,8 +1,8 @@
 default_language_version:
-  python: python3.12
+  python: python3.10
 fail_fast: true
 files: '^.*\.py$'  # must be a valid Python regex
-minimum_pre_commit_version: '4.1.0'  # string expected
+minimum_pre_commit_version: '4.1.0'
 repos:
 - repo: local
   hooks:
