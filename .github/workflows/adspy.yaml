@@ -1,0 +1,39 @@
+name: Python ADS CI
+
+on:
+  push:
+    paths:
+      - 'python/adspy/**/*.py'
+      - 'python/tests/**/*.py'
+  pull_request:
+    branches:
+      - main
+      - 'python/*'
+
+jobs:
+  setup:
+    defaults:
+      run:
+        working-directory: './python'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.10"]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python {{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+
+      - name: Install the project
+        run: pip install ".[dev]"
+
+      - name: Lint
+        run: make check
+
+      - name: Test
+        run: make test

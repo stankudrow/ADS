@@ -27,14 +27,12 @@ classifiers = [
 ]
 dependencies = []
 
-[dependency-groups]
-lint = [
-    "ruff>=0.9.1",
-]
-test = [
+[project.optional-dependencies]
+dev = [
     "pytest>=8.3.4",
     "pytest-random-order>=1.1.1",
     "pytest-xdist>=3.6.1",
+    "ruff>=0.9.4",
 ]
 
 [tool.pytest.ini_options]
