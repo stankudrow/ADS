@@ -1,4 +1,4 @@
-"""The "Merge sort" algorithm.
+"""The "Insertion sort" algorithm.
 
 References:
 
