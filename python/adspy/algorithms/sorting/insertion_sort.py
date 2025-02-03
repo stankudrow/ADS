@@ -1,8 +1,8 @@
-"""The "Bubble sort" algorithm.
+"""The "Insertion sort" algorithm.
 
 References:
 
-- https://en.wikipedia.org/wiki/Bubble_sort
+- https://en.wikipedia.org/wiki/Insertion_sort
 """
 
 from collections.abc import Callable, Sequence
@@ -14,9 +14,9 @@ def _default_key(arg: Any) -> Any:
     return arg
 
 
-def bubble_sort(
+def insertion_sort(
     seq: Sequence,
-    key: None | Callable = None,
+    key: Callable | None = None,
     *,
     reverse: bool = False,
 ) -> list:
@@ -43,13 +43,11 @@ def bubble_sort(
     if (size := len(lst)) < 2:
         return lst
     op = lt if reverse else gt
-    while True:
-        swapped = False
-        for idx in range(1, size):
-            if op(key(lst[idx - 1]), key(lst[idx])):
-                lst[idx - 1], lst[idx] = lst[idx], lst[idx - 1]
-                swapped = True
-        if not swapped:
-            break
-        size -= 1
+    for idx in range(1, size):
+        curr = lst[idx]
+        jdx = idx - 1
+        while jdx > -1 and op(key(lst[jdx]), key(lst[jdx + 1])):
+            lst[jdx + 1], lst[jdx] = lst[jdx], lst[jdx + 1]
+            jdx -= 1
+        lst[jdx + 1] = curr
     return lst

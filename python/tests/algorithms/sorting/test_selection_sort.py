@@ -1,4 +1,4 @@
-"""Test the "Bubble sort" implementation(s)."""
+"""Test the "Selection sort" implementation(s)."""
 
 from collections.abc import Callable, Sequence
 from contextlib import AbstractContextManager
@@ -7,8 +7,8 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.bubble_sort import bubble_sort
 from adspy.algorithms.sorting.common import is_sorted
+from adspy.algorithms.sorting.selection_sort import selection_sort
 
 
 @pytest.mark.parametrize(
@@ -34,10 +34,10 @@ from adspy.algorithms.sorting.common import is_sorted
         True,
     ],
 )
-def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
+def test_selection_sort(seq: Sequence, key: None | Callable, reverse: bool):
     lst = list(seq)
 
-    result = bubble_sort(lst, key=key, reverse=reverse)
+    result = selection_sort(lst, key=key, reverse=reverse)
     expected = sorted(lst, key=key, reverse=reverse)
 
     assert result == expected
@@ -66,12 +66,12 @@ def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
         ),
     ],
 )
-def test_bubble_sort_key(
+def test_selection_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
     lst = list(seq)
 
-    result = bubble_sort(lst, key=key)
+    result = selection_sort(lst, key=key)
 
     assert is_sorted(result, key=key)
     with expectation:

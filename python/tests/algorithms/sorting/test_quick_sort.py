@@ -1,4 +1,4 @@
-"""Test the "Bubble sort" implementation(s)."""
+"""Test the "Quick sort" implementation(s)."""
 
 from collections.abc import Callable, Sequence
 from contextlib import AbstractContextManager
@@ -7,8 +7,8 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.bubble_sort import bubble_sort
 from adspy.algorithms.sorting.common import is_sorted
+from adspy.algorithms.sorting.quick_sort import quick_sort
 
 
 @pytest.mark.parametrize(
@@ -16,8 +16,10 @@ from adspy.algorithms.sorting.common import is_sorted
     [
         [],
         [1],
+        (2, 1),
         (2, 0, 1),
         {2, 4, 3, 1},
+        [2, 3, 1, 1, 5],
     ],
 )
 @pytest.mark.parametrize(
@@ -34,10 +36,10 @@ from adspy.algorithms.sorting.common import is_sorted
         True,
     ],
 )
-def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
+def test_quick_sort(seq: Sequence, key: None | Callable, reverse: bool):
     lst = list(seq)
 
-    result = bubble_sort(lst, key=key, reverse=reverse)
+    result = quick_sort(lst, key=key, reverse=reverse)
     expected = sorted(lst, key=key, reverse=reverse)
 
     assert result == expected
@@ -55,7 +57,7 @@ def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
         pytest.param(
             (0, 1, -1),
             abs,
-            pytest.raises(AssertionError),
+            does_not_raise(),
             marks=pytest.mark.xfail(reason="key failed to sort"),
         ),
         pytest.param(
@@ -66,12 +68,12 @@ def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
         ),
     ],
 )
-def test_bubble_sort_key(
+def test_quick_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
     lst = list(seq)
 
-    result = bubble_sort(lst, key=key)
+    result = quick_sort(lst, key=key)
 
     assert is_sorted(result, key=key)
     with expectation:
