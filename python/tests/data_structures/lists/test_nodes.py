@@ -24,7 +24,7 @@ class TestSinglyLinkedList:
         snode.next = next_node
 
         assert snode.value is None
-        assert snode.next is next_node
+        assert snode.next.value is next_node
 
 
 class TestDoublyLinkedList:
@@ -50,5 +50,5 @@ class TestDoublyLinkedList:
         next_node = DoublyLinkedNode(42)
         dnode.next = next_node
 
-        assert dnode.prev is prev_node
-        assert dnode.next is next_node
+        assert dnode.prev.value is prev_node
+        assert dnode.next.value is next_node
