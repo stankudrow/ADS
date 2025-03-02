@@ -1,15 +1,22 @@
 default_language_version:
   python: python3.10
 fail_fast: true
-files: '^.*\.py$'  # must be a valid Python regex
 minimum_pre_commit_version: '4.1.0'
 repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: check-docstring-first
+  - id: check-toml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
 - repo: local
   hooks:
   - id: ruff-format
     alias: format
     name: "ruff format --check files.py"
     language: python
+    files: '^.*\.py$'
     entry: ruff format
     args: [--check]
     verbose: true
@@ -19,6 +26,7 @@ repos:
     alias: lint
     name: "ruff check files.py"
     language: python
+    files: '^.*\.py$'
     entry: ruff check
     verbose: true
 - repo: local
@@ -27,5 +35,6 @@ repos:
     alias: types
     name: "check types on files.py"
     language: python
+    files: '^.*\.py$'
     entry: mypy
     verbose: true
