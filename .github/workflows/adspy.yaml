@@ -16,8 +16,6 @@ jobs:
     defaults:
       run:
         working-directory: './python'
-    env:
-      UV_PYTHON: ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -42,6 +40,10 @@ jobs:
         run: |
           uv pip install .
           uv sync --group lint --group test
+          uv pip list
+
+      - name: PIP list
+        run: uv pip list
 
       - name: Check
         run: make check
