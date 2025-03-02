@@ -8,27 +8,23 @@ version = "0.1.1"
 source = { virtual = "." }
 
 [package.dev-dependencies]
-lint = [
+dev = [
     { name = "mypy" },
-    { name = "ruff" },
-]
-test = [
     { name = "pytest" },
     { name = "pytest-random-order" },
     { name = "pytest-xdist" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
 
 [package.metadata.requires-dev]
-lint = [
+dev = [
     { name = "mypy", specifier = ">=1.15.0" },
-    { name = "ruff", specifier = ">=0.9.9" },
-]
-test = [
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-random-order", specifier = ">=1.1.1" },
     { name = "pytest-xdist", specifier = ">=3.6.1" },
+    { name = "ruff", specifier = ">=0.9.9" },
 ]
 
 [[package]]
