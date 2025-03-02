@@ -5,7 +5,7 @@ SRC := adspy
 check:
 	ruff format --check
 	ruff check
-	mypy ${SRC}
+	mypy
 
 format:
 	ruff format
