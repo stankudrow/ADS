@@ -37,16 +37,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install the project with dependencies
-        run: |
-          uv pip install .
-          uv sync --group lint --group test
-          uv pip list
-
-      - name: PIP list
-        run: uv pip list
+        run: uv pip install .
 
       - name: Check
-        run: make check
+        run: |
+          uv sync --group lint
+          make check
 
       - name: Test
-        run: make test
+        run: |
+          uv sync --group test
+          make test
