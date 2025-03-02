@@ -1,19 +1,19 @@
 from collections.abc import Callable, Sequence
 from operator import ge, gt, le, lt
-from typing import Any
+from typing import Any, cast
 
 
 def _default_key(arg: Any) -> Any:
     return arg
 
 
-def validate_key_arg(key: None | Callable) -> Callable:
+def validate_key_arg(key: Any) -> Callable:
     if key is None:
         key = _default_key
-    if not callable(key):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
-    return key
+    if callable(key):
+        return cast(Callable, key)
+    msg = f"{key} is not callable"
+    raise TypeError(msg)
 
 
 def is_sorted(
