@@ -5,6 +5,7 @@ on:
     paths:
       - 'python/adspy/**/*.py'
       - 'python/tests/**/*.py'
+      - '.github/workflows/adspy.yaml'
   pull_request:
     branches:
       - main
