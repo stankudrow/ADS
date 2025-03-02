@@ -1,5 +1,3 @@
-SRC := adspy
-
 .PHONY: check format lint test
 
 check:
