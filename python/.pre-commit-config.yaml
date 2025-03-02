@@ -6,9 +6,26 @@ minimum_pre_commit_version: '4.1.0'
 repos:
 - repo: local
   hooks:
-  - id: check
-    alias: lint
-    name: "check files.py"
+  - id: ruff-format
+    alias: format
+    name: "ruff format --check files.py"
     language: python
-    entry: make check
+    entry: ruff format
+    args: [--check]
+    verbose: true
+- repo: local
+  hooks:
+  - id: ruff-check
+    alias: lint
+    name: "ruff check files.py"
+    language: python
+    entry: ruff check
+    verbose: true
+- repo: local
+  hooks:
+  - id: check-types
+    alias: types
+    name: "check types on files.py"
+    language: python
+    entry: mypy
     verbose: true

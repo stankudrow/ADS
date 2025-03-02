@@ -7,6 +7,15 @@ def _default_key(arg: Any) -> Any:
     return arg
 
 
+def validate_key_arg(key: None | Callable) -> Callable:
+    if key is None:
+        key = _default_key
+    if not callable(key):
+        msg = f"{key} is not callable"
+        raise TypeError(msg)
+    return key
+
+
 def is_sorted(
     seq: Sequence,
     key: None | Callable = None,
@@ -28,11 +37,7 @@ def is_sorted(
     bool
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     if reverse:
         op = ge
@@ -71,11 +76,7 @@ def merge(
     list
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     op = gt if reverse else lt
 
