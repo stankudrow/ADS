@@ -37,3 +37,4 @@ def binary_search(it: Iterable, value: Any) -> None | int:
             left = midx + 1
         else:
             right = midx - 1
+    return None

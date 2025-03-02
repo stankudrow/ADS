@@ -45,7 +45,7 @@ def test_merge_sort(seq: Sequence, key: None | Callable, reverse: bool):
 
 
 @pytest.mark.parametrize(
-    ("seq, key, expectation"),
+    ("seq", "key", "expectation"),
     [
         ([0, 1, -1], None, does_not_raise()),
         (

@@ -3,6 +3,7 @@
 check:
 	ruff format --check
 	ruff check
+	mypy
 
 format:
 	ruff format
