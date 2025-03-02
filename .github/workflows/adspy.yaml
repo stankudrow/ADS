@@ -3,9 +3,10 @@ name: Python ADS CI
 on:
   push:
     paths:
+      - '.github/workflows/adspy.yaml'
       - 'python/adspy/**/*.py'
       - 'python/tests/**/*.py'
-      - '.github/workflows/adspy.yaml'
+      - 'python/pyproject.toml'
   pull_request:
     branches:
       - main
@@ -39,9 +40,7 @@ jobs:
           enable-cache: true
 
       - name: Install the project with dependencies
-        run: |
-          uv pip install .
-          uv sync --group lint --group test
+        run: uv pip install ".[dev]"
 
       - name: Check
         run: make check
