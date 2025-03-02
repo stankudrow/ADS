@@ -1,10 +1,21 @@
 # Python Algorithms and Data Structures
 
+## v0.1.1
+
+Added:
+
+- `mypy` type checker
+- extend the `ruff` set of rules
+
+Changed
+
+- the code is linted in accordance with an extended set of `mypy` and `ruff` rules.
+
 ## v0.1.0
 
 The project is an (pip-)installable package.
 
-### Added
+Added:
 
 - Common:
   - Python 3.10 as the minimum version.
