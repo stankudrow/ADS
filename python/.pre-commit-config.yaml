@@ -22,9 +22,9 @@ repos:
     verbose: true
 - repo: local
   hooks:
-  - id: ruff-check
+  - id: check
     alias: lint
-    name: "ruff check files.py"
+    name: "check files.py"
     language: python
     files: '^.*\.py$'
     entry: ruff check

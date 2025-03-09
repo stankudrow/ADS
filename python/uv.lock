@@ -13,7 +13,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-random-order" },
     { name = "pytest-xdist" },
-    { name = "ruff" },
 ]
 
 [package.metadata]

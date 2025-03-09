@@ -12,4 +12,4 @@ lint: format
 	ruff check --fix .
 
 test:
-	pytest tests
+	pytest
