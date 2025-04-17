@@ -65,7 +65,33 @@ def test_comparisons():
     ("it", "key"),
     [([1], 0), ([1, 2], -1), ([3, 4, 5], slice(0, 3, 2))],
 )
-def test_get_item(it: list, key: int | slice):
+def test_get_items(it: list[int], key: int | slice):
     lst = LinkedList(it=it)
 
     assert lst[key] == it[key]
+
+
+@pytest.mark.parametrize("it", [[], [1], [-1, 0, 1]])
+def test_clear(it: list[int]):
+    lst = LinkedList(it)
+
+    lst.clear()
+
+    assert len(lst) == 0
+    assert not tuple(lst)
+
+    with pytest.raises(IndexError):
+        lst[0]
+
+
+@pytest.mark.parametrize(
+    ("it", "key"),
+    [([1], 0), ([1, 2], -1), ([3, 4, 5], slice(0, 3, 2))],
+)
+def test_delete_items(it: list[int], key: int | slice):
+    lst = LinkedList(it)
+
+    del lst[key]
+    del it[key]
+
+    assert lst == it

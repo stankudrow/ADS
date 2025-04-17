@@ -68,6 +68,16 @@ class LinkedList:
             return type(self).from_iterable(it=result)
         return result
 
+    def __delitem__(self, key: int | slice) -> None:
+        seq = tuple(self)
+
+        deletable = seq[key]
+        if isinstance(key, int):
+            deletable = (deletable,)
+
+        self.clear()
+        self.extend(it=tuple(item for item in seq if item not in deletable))
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
             return tuple(self) == tuple(other)
@@ -91,6 +101,11 @@ class LinkedList:
         if isinstance(other, Iterable):
             return tuple(self) < tuple(other)
         return NotImplemented
+
+    def __repr__(self) -> str:
+        cls_name = type(self).__name__
+        it = tuple(self)
+        return f"{cls_name}(it={it})"
 
     def prepend(self, value: Any) -> None:
         node = _LinkedNode(value)
@@ -117,3 +132,30 @@ class LinkedList:
     def extend(self, it: Iterable) -> None:
         for item in it:
             self.append(item)
+
+    def _detach(self, node: None | _LinkedNode) -> None:
+        if node is None:
+            return
+
+        ante: None | _LinkedNode = node.prev
+        post: None | _LinkedNode = node.next
+        if ante:
+            ante.next = post
+        if post:
+            post.prev = ante
+
+        self._length -= 1
+
+    def _popleft(self) -> None:
+        if (head := self._head) is None:
+            return
+
+        post = head.next
+        self._detach(node=head)
+        self._head = post
+        if post is None:
+            self._tail = self._head
+
+    def clear(self) -> None:
+        for _ in range(len(self)):
+            self._popleft()
