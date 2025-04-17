@@ -66,22 +66,53 @@ class LinkedList:
     def __bool__(self) -> bool:
         return bool(len(self))
 
+    def __contains__(self, value: Any) -> bool:
+        return value in tuple(self)
+
+    def _get_nonegative_index(self, index: int) -> int:
+        return index if index > -1 else len(self) + index
+
     def __getitem__(self, key: int | slice) -> Any:
-        # inefficient yet simple and delegative
+        # inefficient yet simple and delegative enough
         result = tuple(self)[key]
         if isinstance(key, slice):
             return type(self).from_iterable(it=result)
         return result
 
-    def __delitem__(self, key: int | slice) -> None:
-        seq = tuple(self)
-
-        deletable = seq[key]
+    def __setitem__(self, key: int | slice, value: Any) -> None:
         if isinstance(key, int):
-            deletable = (deletable,)
+            key = self._get_nonegative_index(index=key)
+            key = slice(key, key + 1, 1)
 
-        self.clear()
-        self.extend(it=tuple(item for item in seq if item not in deletable))
+        if not (indices := tuple(range(key.start, key.stop, key.step))):
+            return
+
+        values = tuple(value) if isinstance(value, Iterable) else (value,)
+        if len(indices) != len(values):
+            msg = f"key={key} mismatches the value={value}"
+            raise LinkedListError(msg)
+
+        ivalues = dict(zip(indices, values, strict=True))
+        del indices
+        del values
+
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx not in ivalues:
+                continue
+            node.value = ivalues[idx]
+
+    def __delitem__(self, key: int | slice) -> None:
+        if isinstance(key, int):
+            key = self._get_nonegative_index(index=key)
+            key = slice(key, key + 1, 1)
+
+        if not (indices := set(range(key.start, key.stop, key.step))):
+            return
+
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx not in indices:
+                continue
+            self._detach(node)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
@@ -201,7 +232,7 @@ class LinkedList:
     def pop(self, index: int = -1) -> Any:
         """Removes the node with the `index`."""
 
-        nonneg_idx = index if index > -1 else (len(self) + index)
+        nonneg_idx = self._get_nonegative_index(index=index)
 
         for idx, node in enumerate(self._yield_nodes()):
             if idx == nonneg_idx:

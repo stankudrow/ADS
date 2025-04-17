@@ -1,9 +1,12 @@
 import random
 from collections.abc import Iterable
+from contextlib import AbstractContextManager
+from contextlib import nullcontext as does_not_raise
+from typing import Any
 
 import pytest
 
-from adspy.data_structures.linked_lists import LinkedList
+from adspy.data_structures.linked_lists import LinkedList, LinkedListError
 
 
 @pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
@@ -63,6 +66,13 @@ def test_comparisons():
 
 
 @pytest.mark.parametrize(
+    ("it", "value", "answer"), [([], 1, False), ([1], 1, True), ([1], 0, False)]
+)
+def test_contains(it: list[int], value: int, answer: bool):
+    assert bool(value in LinkedList(it=it)) == answer
+
+
+@pytest.mark.parametrize(
     ("it", "key"),
     [([1], 0), ([1, 2], -1), ([3, 4, 5], slice(0, 3, 2))],
 )
@@ -87,7 +97,13 @@ def test_clear(it: list[int]):
 
 @pytest.mark.parametrize(
     ("it", "key"),
-    [([1], 0), ([1, 2], -1), ([3, 4, 5], slice(0, 3, 2))],
+    [
+        ([1], 0),
+        ([1, 2], -1),
+        ([3, 4, 5], slice(0, 3, 2)),
+        ([1, 1, 1, 1], slice(1, 3, 1)),
+        ([1, 3, 1, 1, 2], 2),
+    ],
 )
 def test_delete_items(it: list[int], key: int | slice):
     lst = LinkedList(it)
@@ -120,5 +136,32 @@ def test_pop():
 
         lst.pop(index=idx)
         it.pop(idx)
+
+        assert lst == it
+
+
+@pytest.mark.parametrize(
+    ("it", "key", "value", "expectation"),
+    [
+        ([1], 0, "2", does_not_raise()),
+        ([1, 2], -1, "a", does_not_raise()),
+        ([3, 4, 5], slice(0, 3, 2), [-1, 1], does_not_raise()),
+        ([1, 1, 1, 1], slice(1, 3, 1), [2, 3], does_not_raise()),
+        ([1, 3, 1, 1, 2], 2, "T", does_not_raise()),
+        ([1, 2, 3], 2, [2, 3], pytest.raises(LinkedListError)),
+        ([3, 2, 1], slice(0, 2, 1), 21, pytest.raises(LinkedListError)),
+    ],
+)
+def test_set_items(
+    it: list[int],
+    key: int | slice,
+    value: Any,
+    expectation: AbstractContextManager,
+):
+    with expectation:
+        lst = LinkedList(it=it)
+
+        lst[key] = value
+        it[key] = value
 
         assert lst == it
