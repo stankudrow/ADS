@@ -65,11 +65,14 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "8.3"
-addopts = "-sx"
+addopts = [
+    "-s",
+    "-vvv",
+    "--random-order"
+]
 testpaths = [
     "tests",
 ]
-verbosity_test_cases = 3
 
 [tool.ruff]
 indent-width = 4
