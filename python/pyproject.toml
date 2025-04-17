@@ -27,7 +27,6 @@ classifiers = [
     "Topic :: Software Development :: Version Control :: Git",
     "Typing :: Typed",
 ]
-dependencies = []
 
 [project.optional-dependencies]
 dev = [
@@ -117,7 +116,12 @@ ignore = [
     "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "ISC001",  # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/
 ]
-fixable = ["I", "ISC"]
+fixable = [
+    "ALL",
+    "I",
+    "ISC",
+    "TC006"
+]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]

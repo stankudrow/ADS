@@ -11,7 +11,7 @@ def validate_key_arg(key: Any) -> Callable:
     if key is None:
         key = _default_key
     if callable(key):
-        return cast(Callable, key)
+        return cast("Callable", key)
     msg = f"{key} is not callable"
     raise TypeError(msg)
 
