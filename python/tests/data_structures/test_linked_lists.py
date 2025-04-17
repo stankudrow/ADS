@@ -1,3 +1,4 @@
+import random
 from collections.abc import Iterable
 
 import pytest
@@ -95,3 +96,29 @@ def test_delete_items(it: list[int], key: int | slice):
     del it[key]
 
     assert lst == it
+
+
+def test_remove():
+    it = random.sample(range(100), 10)
+    lst = LinkedList(it=it)
+
+    while lst:
+        item = random.choice(lst)
+
+        lst.remove(value=item)
+        it.remove(item)
+
+        assert lst == it
+
+
+def test_pop():
+    it = random.sample(range(100), 10)
+    lst = LinkedList(it=it)
+
+    while lst:
+        idx = random.choice(range(len(lst)))
+
+        lst.pop(index=idx)
+        it.pop(idx)
+
+        assert lst == it

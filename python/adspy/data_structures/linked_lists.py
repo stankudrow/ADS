@@ -51,6 +51,8 @@ class LinkedList:
 
     @classmethod
     def from_iterable(cls, it: Iterable) -> "LinkedList":
+        """Return a "(Doubly) Linked List" instance from the `it`erable."""
+
         return cls(it=it)
 
     def __init__(self, it: None | Iterable = None) -> None:
@@ -60,6 +62,9 @@ class LinkedList:
 
         # Well, it's kinda unfair to use Python lists here :)
         self.extend(it or ())
+
+    def __bool__(self) -> bool:
+        return bool(len(self))
 
     def __getitem__(self, key: int | slice) -> Any:
         # inefficient yet simple and delegative
@@ -83,15 +88,6 @@ class LinkedList:
             return tuple(self) == tuple(other)
         return NotImplemented
 
-    def __iter__(self) -> Iterator[Any]:
-        node = self._head
-        while node:
-            yield node.value
-            node = node.next
-
-    def __len__(self) -> int:
-        return self._length
-
     def __le__(self, other: object) -> bool:
         if isinstance(other, Iterable):
             return tuple(self) <= tuple(other)
@@ -102,12 +98,27 @@ class LinkedList:
             return tuple(self) < tuple(other)
         return NotImplemented
 
+    def _yield_nodes(self) -> Iterator[_LinkedNode]:
+        node = self._head
+        while node:
+            yield node
+            node = node.next
+
+    def __iter__(self) -> Iterator[Any]:
+        for node in self._yield_nodes():
+            yield node.value
+
+    def __len__(self) -> int:
+        return self._length
+
     def __repr__(self) -> str:
         cls_name = type(self).__name__
         it = tuple(self)
         return f"{cls_name}(it={it})"
 
     def prepend(self, value: Any) -> None:
+        """Prepend (add at the beginning) a value."""
+
         node = _LinkedNode(value)
         if self._head is None:
             self._tail = node
@@ -119,6 +130,8 @@ class LinkedList:
         self._length += 1
 
     def append(self, value: Any) -> None:
+        """Append (add at the end) a value."""
+
         node = _LinkedNode(value)
         if self._tail is None:
             self._tail = node
@@ -130,8 +143,26 @@ class LinkedList:
         self._length += 1
 
     def extend(self, it: Iterable) -> None:
-        for item in it:
-            self.append(item)
+        """Append the items from the `it`erable."""
+
+        if not (items := tuple(it)):
+            return
+
+        length = len(items)
+        itemator = iter(items)
+
+        head = _LinkedNode(value=next(itemator))
+        cur = head
+        for item in itemator:
+            node = _LinkedNode(value=item)
+            cur.next = node
+            node.prev = cur
+            cur = node
+
+        if self._tail is None:
+            self._head = head
+        self._tail = cur
+        self._length += length
 
     def _detach(self, node: None | _LinkedNode) -> None:
         if node is None:
@@ -139,23 +170,44 @@ class LinkedList:
 
         ante: None | _LinkedNode = node.prev
         post: None | _LinkedNode = node.next
+
         if ante:
             ante.next = post
+        else:
+            self._head = post
+
         if post:
             post.prev = ante
+        else:
+            self._tail = ante
 
         self._length -= 1
-
-    def _popleft(self) -> None:
-        if (head := self._head) is None:
-            return
-
-        post = head.next
-        self._detach(node=head)
-        self._head = post
-        if post is None:
-            self._tail = self._head
+        del node
 
     def clear(self) -> None:
-        for _ in range(len(self)):
-            self._popleft()
+        """Remove all elements from the list."""
+
+        for node in self._yield_nodes():
+            self._detach(node)
+
+    def remove(self, value: Any) -> None:
+        """Remove the first occurence of the value."""
+
+        for node in self._yield_nodes():
+            if node.value == value:
+                self._detach(node)
+                break
+
+    def pop(self, index: int = -1) -> Any:
+        """Removes the node with the `index`."""
+
+        nonneg_idx = index if index > -1 else (len(self) + index)
+
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx == nonneg_idx:
+                value = node.value
+                self._detach(node)
+                return value
+
+        msg = f"bad index={index}"
+        raise IndexError(msg)
