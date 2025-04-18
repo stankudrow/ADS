@@ -75,13 +75,29 @@ def test_contains(it: list[int], value: int, answer: bool):
 
 
 @pytest.mark.parametrize(
-    ("it", "key"),
-    [([1], 0), ([1, 2], -1), ([3, 4, 5], slice(0, 3, 2))],
+    ("it", "key", "expectation"),
+    [
+        ([], 0, pytest.raises(IndexError)),
+        ([1], 0, does_not_raise()),
+        ([1], -1, does_not_raise()),
+        ([], slice(0, 3, 1), does_not_raise()),
+        ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
+    ],
 )
-def test_get_items(it: list[int], key: int | slice):
+def test_get_items(
+    it: list[int], key: int | slice, expectation: AbstractContextManager
+):
     lst = DoublyLinkedList(it=it)
 
-    assert lst[key] == it[key]
+    lst_elems = None
+    with expectation:
+        lst_elems = lst[key]
+
+    it_elems = None
+    with expectation:
+        it_elems = lst[key]
+
+    assert it_elems == lst_elems
 
 
 @pytest.mark.parametrize("it", [[], [1], [-1, 0, 1]])
@@ -98,20 +114,28 @@ def test_clear(it: list[int]):
 
 
 @pytest.mark.parametrize(
-    ("it", "key"),
+    ("it", "key", "expectation"),
     [
-        ([1], 0),
-        ([1, 2], -1),
-        ([3, 4, 5], slice(0, 3, 2)),
-        ([1, 1, 1, 1], slice(1, 3, 1)),
-        ([1, 3, 1, 1, 2], 2),
+        ([], 0, pytest.raises(IndexError)),
+        ([1], 0, does_not_raise()),
+        ([1], -1, does_not_raise()),
+        ([], slice(0, 3, 1), does_not_raise()),
+        ([2], slice(0, 3, 1), does_not_raise()),
+        ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
+        ([1, 1, 1, 1], slice(1, 3, 1), does_not_raise()),
+        ([1, 3, 1, 1, 2], -3, does_not_raise()),
     ],
 )
-def test_delete_items(it: list[int], key: int | slice):
+def test_delete_items(
+    it: list[int], key: int | slice, expectation: AbstractContextManager
+):
     lst = DoublyLinkedList(it)
 
-    del lst[key]
-    del it[key]
+    with expectation:
+        del it[key]
+
+    with expectation:
+        del lst[key]
 
     assert lst == it
 
@@ -121,7 +145,7 @@ def test_remove():
     lst = DoublyLinkedList(it=it)
 
     while lst:
-        item = random.choice(lst)
+        item = random.choice(it)
 
         lst.remove(value=item)
         it.remove(item)
@@ -141,17 +165,28 @@ def test_pop():
 
         assert lst == it
 
+    with pytest.raises(IndexError):
+        lst.pop()
+
+    with pytest.raises(IndexError):
+        lst.pop(100)
+
 
 @pytest.mark.parametrize(
     ("it", "key", "value", "expectation"),
     [
+        ([], -1, 0, pytest.raises(IndexError)),
+        ([], slice(-1, 0, 1), [3], does_not_raise()),
+        ([], slice(1, 3, 1), [3], does_not_raise()),
+        ([1], slice(0, 3, 1), [3], does_not_raise()),
+        ([2], slice(1, 3, 1), [3], does_not_raise()),
         ([1], 0, "2", does_not_raise()),
         ([1, 2], -1, "a", does_not_raise()),
         ([3, 4, 5], slice(0, 3, 2), [-1, 1], does_not_raise()),
         ([1, 1, 1, 1], slice(1, 3, 1), [2, 3], does_not_raise()),
         ([1, 3, 1, 1, 2], 2, "T", does_not_raise()),
-        ([1, 2, 3], 2, [2, 3], pytest.raises(LinkedListError)),
-        ([3, 2, 1], slice(0, 2, 1), 21, pytest.raises(LinkedListError)),
+        ([1, 2, 3], 2, [2, 3], does_not_raise()),
+        ([3, 2, 1], slice(0, 2, 1), 21, pytest.raises(TypeError)),
     ],
 )
 def test_set_items(
@@ -160,13 +195,15 @@ def test_set_items(
     value: Any,
     expectation: AbstractContextManager,
 ):
-    with expectation:
-        lst = DoublyLinkedList(it=it)
+    lst = DoublyLinkedList(it=it)
 
-        lst[key] = value
+    with expectation:
         it[key] = value
 
-        assert lst == it
+    with expectation:
+        lst[key] = value
+
+    assert lst == it
 
 
 def test_searchability():
@@ -186,3 +223,29 @@ def test_sortability():
 
     assert merge_sort(seq=lst) == answer
     assert quick_sort(seq=lst) == answer
+
+
+def test_insert():
+    lst: list[int] = []
+    dlist = DoublyLinkedList()
+
+    idx, val = 0, 21
+    lst.insert(idx, val)
+    dlist.insert(index=idx, value=val)
+    assert lst == dlist
+
+    lst.clear()
+    dlist.clear()
+
+    idx = -1
+    lst.insert(idx, val)
+    dlist.insert(index=idx, value=val)
+    assert lst == dlist
+
+    for i in (0, -1, 2, -2, -3, 4):
+        new_val = val * i
+
+        lst.insert(i, new_val)
+        dlist.insert(index=i, value=new_val)
+
+        assert dlist == lst

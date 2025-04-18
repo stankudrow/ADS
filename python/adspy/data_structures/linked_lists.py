@@ -69,74 +69,58 @@ class DoublyLinkedList(MutableSequence):
     def __contains__(self, value: Any) -> bool:
         return value in tuple(self)
 
-    def _get_nonegative_index(self, index: int) -> int:
-        return index if index > -1 else len(self) + index
+    def _get_normalised_index(self, index: int) -> int:
+        idx = index if index > -1 else len(self) + index
+        return 0 if idx < 0 else idx
 
-    def __getitem__(self, key: int | slice) -> Any:
-        # inefficient yet simple and delegative enough
-        result = tuple(self)[key]
-        if isinstance(key, slice):
-            return type(self).from_iterable(it=result)
-        return result
-
-    def insert(self, index: int, value: Any) -> None:
-        pidx = self._get_nonegative_index(index)
-
-        if not pidx:
-            self.prepend(value)
-            return
-        if pidx >= len(self):
-            self.append(value)
-            return
-
-        new_node = _DoublyLinkedNode(value=value)
-        for idx, node in enumerate(self._yield_nodes()):
-            if idx == index:
-                # mypy treats the `prev_node` value of type None | Node
-                if prev_node := node.prev:
-                    prev_node.next = new_node
-                new_node.prev = prev_node
-
-                new_node.next = node
-                node.prev = new_node
-
-                self._length += 1
-                break
-
-    def __setitem__(self, key: int | slice, value: Any) -> None:
+    def _get_indices(self, key: int | slice) -> tuple[int, ...]:
         if isinstance(key, int):
-            key = self._get_nonegative_index(index=key)
+            key = self._get_normalised_index(index=key)
             key = slice(key, key + 1, 1)
+        return tuple(range(key.start, key.stop, key.step))
 
-        if not (indices := tuple(range(key.start, key.stop, key.step))):
-            return
-
-        values = tuple(value) if isinstance(value, Iterable) else (value,)
-        if len(indices) != len(values):
-            msg = f"key={key} mismatches the value={value}"
-            raise LinkedListError(msg)
-
-        ivalues = dict(zip(indices, values, strict=True))
-        del indices
-        del values
-
-        for idx, node in enumerate(self._yield_nodes()):
-            if idx not in ivalues:
-                continue
-            node.value = ivalues[idx]
+    def _check_indices(self, key: int | slice) -> tuple[int, ...]:
+        indices = tuple(self._get_indices(key))
+        if isinstance(key, int) and (len(indices) > len(self)):
+            msg = f"bad key {key!r}"
+            raise IndexError(msg)
+        return indices
 
     def __delitem__(self, key: int | slice) -> None:
-        if isinstance(key, int):
-            key = self._get_nonegative_index(index=key)
-            key = slice(key, key + 1, 1)
-
-        if not (indices := set(range(key.start, key.stop, key.step))):
-            return
-
+        indices = self._check_indices(key=key)
         for idx, node in enumerate(self._yield_nodes()):
             if idx not in indices:
                 continue
             self._detach(node)
+
+    def __getitem__(self, key: int | slice) -> Any:
+        lst = type(self)()
+        indices = set(self._check_indices(key=key))
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx not in indices:
+                continue
+            lst.append(node)
+
+    def __setitem__(self, key: int | slice, value: Any) -> None:
+        indices = self._check_indices(key=key)
+
+        if isinstance(key, slice):
+            value = tuple(value)  # raises TypeError
+
+        # relies on ordered dictionaries
+        values = (value,) if isinstance(key, int) else value
+        idx_values = dict(zip(indices, values, strict=False))
+        del indices
+        del values
+
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx not in idx_values:
+                continue
+            node.value = idx_values.pop(idx)
+
+        if isinstance(key, slice):
+            for idx in tuple(idx_values.keys()):
+                self.append(idx_values.pop(idx))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
@@ -219,6 +203,30 @@ class DoublyLinkedList(MutableSequence):
         self._tail = cur
         self._length += length
 
+    def insert(self, index: int, value: Any) -> None:
+        pidx = self._get_normalised_index(index)
+
+        if not pidx:
+            self.prepend(value)
+            return
+        if pidx < 0:
+            self.append(value)
+            return
+
+        new_node = _DoublyLinkedNode(value=value)
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx == pidx:
+                # mypy treats the `prev_node` value of type None | Node
+                if prev_node := node.prev:
+                    prev_node.next = new_node
+                new_node.prev = prev_node
+
+                new_node.next = node
+                node.prev = new_node
+
+                self._length += 1
+                break
+
     def _detach(self, node: None | _DoublyLinkedNode) -> None:
         if node is None:
             return
@@ -256,7 +264,7 @@ class DoublyLinkedList(MutableSequence):
     def pop(self, index: int = -1) -> Any:
         """Removes the node with the `index`."""
 
-        nonneg_idx = self._get_nonegative_index(index=index)
+        nonneg_idx = self._get_normalised_index(index=index)
 
         for idx, node in enumerate(self._yield_nodes()):
             if idx == nonneg_idx:
