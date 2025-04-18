@@ -1,18 +1,18 @@
 """Linked lists data structures."""
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, MutableSequence
 from typing import Any
 
 
-class _LinkedNode:
+class _DoublyLinkedNode:
     """Doubly linked node."""
 
     __slots__ = ("value", "_prev", "_next")
 
     def __init__(self, value: Any = None) -> None:
         self.value = value
-        self._prev: _LinkedNode | None = None
-        self._next: _LinkedNode | None = None
+        self._prev: _DoublyLinkedNode | None = None
+        self._next: _DoublyLinkedNode | None = None
 
     def __eq__(self, value: object) -> bool:
         return bool(self.value == value)
@@ -22,20 +22,20 @@ class _LinkedNode:
         return f"{cls_name}(value={self.value!r})"
 
     @property
-    def prev(self) -> "_LinkedNode | None":
+    def prev(self) -> "_DoublyLinkedNode | None":
         return self._prev
 
     @prev.setter
-    def prev(self, node: "_LinkedNode | None") -> None:
-        self._prev = node if isinstance(node, _LinkedNode) else None
+    def prev(self, node: "_DoublyLinkedNode | None") -> None:
+        self._prev = node if isinstance(node, _DoublyLinkedNode) else None
 
     @property
-    def next(self) -> "_LinkedNode | None":
+    def next(self) -> "_DoublyLinkedNode | None":
         return self._next
 
     @next.setter
-    def next(self, node: "_LinkedNode | None") -> None:
-        self._next = node if isinstance(node, _LinkedNode) else None
+    def next(self, node: "_DoublyLinkedNode | None") -> None:
+        self._next = node if isinstance(node, _DoublyLinkedNode) else None
 
 
 # Linked lists
@@ -44,20 +44,20 @@ class _LinkedNode:
 class LinkedListError(Exception): ...
 
 
-class LinkedList:
-    """Doubly linked list."""
+class DoublyLinkedList(MutableSequence):
+    """Doubly linked list DS."""
 
     __slots__ = ("_head", "_tail", "_length")
 
     @classmethod
-    def from_iterable(cls, it: Iterable) -> "LinkedList":
+    def from_iterable(cls, it: Iterable) -> "DoublyLinkedList":
         """Return a "(Doubly) Linked List" instance from the `it`erable."""
 
         return cls(it=it)
 
     def __init__(self, it: None | Iterable = None) -> None:
-        self._head: _LinkedNode | None = None
-        self._tail: _LinkedNode | None = None
+        self._head: _DoublyLinkedNode | None = None
+        self._tail: _DoublyLinkedNode | None = None
         self._length: int = 0
 
         # Well, it's kinda unfair to use Python lists here :)
@@ -78,6 +78,30 @@ class LinkedList:
         if isinstance(key, slice):
             return type(self).from_iterable(it=result)
         return result
+
+    def insert(self, index: int, value: Any) -> None:
+        pidx = self._get_nonegative_index(index)
+
+        if not pidx:
+            self.prepend(value)
+            return
+        if pidx >= len(self):
+            self.append(value)
+            return
+
+        new_node = _DoublyLinkedNode(value=value)
+        for idx, node in enumerate(self._yield_nodes()):
+            if idx == index:
+                # mypy treats the `prev_node` value of type None | Node
+                if prev_node := node.prev:
+                    prev_node.next = new_node
+                new_node.prev = prev_node
+
+                new_node.next = node
+                node.prev = new_node
+
+                self._length += 1
+                break
 
     def __setitem__(self, key: int | slice, value: Any) -> None:
         if isinstance(key, int):
@@ -129,7 +153,7 @@ class LinkedList:
             return tuple(self) < tuple(other)
         return NotImplemented
 
-    def _yield_nodes(self) -> Iterator[_LinkedNode]:
+    def _yield_nodes(self) -> Iterator[_DoublyLinkedNode]:
         node = self._head
         while node:
             yield node
@@ -150,7 +174,7 @@ class LinkedList:
     def prepend(self, value: Any) -> None:
         """Prepend (add at the beginning) a value."""
 
-        node = _LinkedNode(value)
+        node = _DoublyLinkedNode(value)
         if self._head is None:
             self._tail = node
             self._head = node
@@ -163,7 +187,7 @@ class LinkedList:
     def append(self, value: Any) -> None:
         """Append (add at the end) a value."""
 
-        node = _LinkedNode(value)
+        node = _DoublyLinkedNode(value)
         if self._tail is None:
             self._tail = node
             self._head = node
@@ -182,10 +206,10 @@ class LinkedList:
         length = len(items)
         itemator = iter(items)
 
-        head = _LinkedNode(value=next(itemator))
+        head = _DoublyLinkedNode(value=next(itemator))
         cur = head
         for item in itemator:
-            node = _LinkedNode(value=item)
+            node = _DoublyLinkedNode(value=item)
             cur.next = node
             node.prev = cur
             cur = node
@@ -195,12 +219,12 @@ class LinkedList:
         self._tail = cur
         self._length += length
 
-    def _detach(self, node: None | _LinkedNode) -> None:
+    def _detach(self, node: None | _DoublyLinkedNode) -> None:
         if node is None:
             return
 
-        ante: None | _LinkedNode = node.prev
-        post: None | _LinkedNode = node.next
+        ante: None | _DoublyLinkedNode = node.prev
+        post: None | _DoublyLinkedNode = node.next
 
         if ante:
             ante.next = post
