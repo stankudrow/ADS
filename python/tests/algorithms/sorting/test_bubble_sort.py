@@ -1,5 +1,6 @@
 """Test the "Bubble sort" implementation(s)."""
 
+import random
 from collections.abc import Callable, Sequence
 from contextlib import AbstractContextManager
 from contextlib import nullcontext as does_not_raise
@@ -44,7 +45,7 @@ def test_bubble_sort(seq: Sequence, key: None | Callable, reverse: bool):
 
 
 @pytest.mark.parametrize(
-    ("seq, key, expectation"),
+    ("seq", "key", "expectation"),
     [
         ([0, 1, -1], None, does_not_raise()),
         (
@@ -77,3 +78,11 @@ def test_bubble_sort_key(
     with expectation:
         expected = sorted(lst, key=key)
         assert result == expected
+
+
+def test_bubble_sort_purity():
+    sample = random.sample(range(1, 100, 2), 15)
+    sample_dup = sample.copy()
+
+    assert bubble_sort(seq=sample) == sorted(sample)
+    assert sample == sample_dup

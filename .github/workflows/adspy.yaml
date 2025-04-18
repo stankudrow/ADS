@@ -3,8 +3,10 @@ name: Python ADS CI
 on:
   push:
     paths:
+      - '.github/workflows/adspy.yaml'
       - 'python/adspy/**/*.py'
       - 'python/tests/**/*.py'
+      - 'python/pyproject.toml'
   pull_request:
     branches:
       - main
@@ -29,10 +31,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
 
-      - name: Install the project
+      - name: Install the project with dependencies
         run: pip install ".[dev]"
 
-      - name: Lint
+      - name: Check
         run: make check
 
       - name: Test

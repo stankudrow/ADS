@@ -7,11 +7,8 @@ References:
 
 from collections.abc import Callable, Sequence
 from operator import gt, lt
-from typing import Any
 
-
-def _default_key(arg: Any) -> Any:
-    return arg
+from adspy.algorithms.sorting.common import validate_key_arg
 
 
 def selection_sort(
@@ -33,11 +30,7 @@ def selection_sort(
     list
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     lst = list(seq)
     if (size := len(lst)) < 2:

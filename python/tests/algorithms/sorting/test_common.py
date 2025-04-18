@@ -10,7 +10,7 @@ from adspy.algorithms.sorting.common import (
 
 
 @pytest.mark.parametrize(
-    ("seq, reverse, strict, ans"),
+    ("seq", "reverse", "strict", "ans"),
     [
         ([], False, False, True),
         ([], True, False, True),
@@ -29,7 +29,7 @@ def test_is_sorted(seq: Sequence, reverse: bool, strict: bool, ans: bool):
 
 
 @pytest.mark.parametrize(
-    ("seq, key, ans"),
+    ("seq", "key", "ans"),
     [
         ([], None, True),
         (
