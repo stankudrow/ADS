@@ -1,10 +1,19 @@
 from collections.abc import Callable, Sequence
 from operator import ge, gt, le, lt
-from typing import Any
+from typing import Any, cast
 
 
 def _default_key(arg: Any) -> Any:
     return arg
+
+
+def validate_key_arg(key: Any) -> Callable:
+    if key is None:
+        key = _default_key
+    if callable(key):
+        return cast("Callable", key)
+    msg = f"{key} is not callable"
+    raise TypeError(msg)
 
 
 def is_sorted(
@@ -28,11 +37,7 @@ def is_sorted(
     bool
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     if reverse:
         op = ge
@@ -71,11 +76,7 @@ def merge(
     list
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     op = gt if reverse else lt
 

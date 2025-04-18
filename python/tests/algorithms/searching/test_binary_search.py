@@ -1,5 +1,4 @@
 from collections.abc import Iterable
-from typing import Any
 
 import pytest
 
@@ -26,6 +25,6 @@ from adspy.algorithms.searching.binary_search import binary_search
         ),
     ],
 )
-def test_binary_search(it: Iterable, elem: Any, ans: None | int):
+def test_binary_search(it: Iterable, elem: int, ans: None | int):
     lst = list(it)
     assert binary_search(lst, elem) == ans

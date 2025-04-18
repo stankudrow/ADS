@@ -1,5 +1,4 @@
 from collections.abc import Iterable
-from typing import Any
 
 import pytest
 
@@ -17,6 +16,6 @@ from adspy.algorithms.searching.linear_search import linear_search
         ((1, 2, 2, 2), 2, 1),
     ],
 )
-def test_linear_search(it: Iterable, elem: Any, ans: None | int):
+def test_linear_search(it: Iterable, elem: int, ans: None | int):
     lst = list(it)
     assert linear_search(lst, elem) == ans

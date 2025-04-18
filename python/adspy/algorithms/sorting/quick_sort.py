@@ -10,12 +10,16 @@ from operator import gt, lt
 from random import randint
 from typing import Any
 
-
-def _default_key(arg: Any) -> Any:
-    return arg
+from adspy.algorithms.sorting.common import validate_key_arg
 
 
-def _compare(left: Any, right: Any, *, key=Callable, cmp: Callable) -> bool:
+def _compare(
+    left: Any,
+    right: Any,
+    *,
+    key: Callable[[Any], Any],
+    cmp: Callable[[Any, Any], bool],
+) -> bool:
     return cmp(key(left), key(right))
 
 
@@ -72,11 +76,7 @@ def quick_sort(
     list
     """
 
-    if key is None:
-        key = _default_key
-    if not isinstance(key, Callable):
-        msg = f"{key} is not callable"
-        raise TypeError(msg)
+    key = validate_key_arg(key)
 
     lst = list(seq)
     if (size := len(lst)) > 1:
