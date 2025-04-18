@@ -1,10 +1,22 @@
 # Python Algorithms and Data Structures
 
+## v0.2.0
+
+Added:
+
+- `mypy` type checker
+- DoublyLinkedList data structure
+
+Changed
+
+- Extend the set of `ruff` rules
+- The code linted in accordance with `mypy` and `ruff` rules.
+
 ## v0.1.0
 
 The project is an (pip-)installable package.
 
-### Added
+Added:
 
 - Common:
   - Python 3.10 as the minimum version.
