@@ -6,6 +6,8 @@ from typing import Any
 
 import pytest
 
+from adspy.algorithms.searching.linear_search import linear_search
+from adspy.algorithms.sorting.merge_sort import merge_sort
 from adspy.data_structures.linked_lists import LinkedList, LinkedListError
 
 
@@ -165,3 +167,19 @@ def test_set_items(
         it[key] = value
 
         assert lst == it
+
+
+def test_searchability():
+    sample = (-1, 0, 1, -2, 2)
+    lst = LinkedList(it=sample)
+
+    value = random.choice(sample)
+
+    assert linear_search(it=lst, value=value) == sample.index(value)
+
+
+def test_sortability():
+    sample = random.sample(range(1, 100, 2), 20)
+    lst = LinkedList(it=sample)
+
+    assert merge_sort(seq=lst) == sorted(sample)
