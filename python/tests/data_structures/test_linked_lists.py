@@ -8,7 +8,7 @@ import pytest
 
 from adspy.algorithms.searching import linear_search
 from adspy.algorithms.sorting import merge_sort, quick_sort
-from adspy.data_structures.linked_lists import DoublyLinkedList, LinkedListError
+from adspy.data_structures.linked_lists import DoublyLinkedList
 
 
 @pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
@@ -249,3 +249,11 @@ def test_insert():
         dlist.insert(index=i, value=new_val)
 
         assert dlist == lst
+
+
+@pytest.mark.parametrize("it", [[], [0], [1, 2], [1, -1, 0]])
+def test_reversed(it: list[int]):
+    icopy = it.copy()
+    lst = DoublyLinkedList(it=icopy)
+
+    assert tuple(reversed(lst)) == tuple(reversed(icopy))

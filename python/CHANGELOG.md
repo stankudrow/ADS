@@ -1,11 +1,21 @@
 # Python Algorithms and Data Structures
 
+## v0.3.0
+
+Added:
+
+- Ruff's "F" (pyflakes) rules
+
+Changed:
+
+- `__reversed__()` protocol for the `DoublyLinkedList` data structure
+
 ## v0.2.0
 
 Added:
 
-- `mypy` type checker
-- DoublyLinkedList data structure
+- `mypy` type checker support
+- the `DoublyLinkedList` data structure
 
 Changed
 

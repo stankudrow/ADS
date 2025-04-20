@@ -155,6 +155,12 @@ class DoublyLinkedList(MutableSequence):
         it = tuple(self)
         return f"{cls_name}(it={it})"
 
+    def __reversed__(self) -> Iterator[Any]:
+        tail = self._tail
+        while tail:
+            yield tail.value
+            tail = tail.prev
+
     def prepend(self, value: Any) -> None:
         """Prepend (add at the beginning) a value."""
 
