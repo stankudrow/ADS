@@ -1,5 +1,12 @@
 # Python Algorithms and Data Structures
 
+## v0.3.0
+
+Added:
+
+- "pyflakes" rules
+- `__reversed__()` protocol for DoublyLinkedList
+
 ## v0.2.0
 
 Added:
