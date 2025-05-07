@@ -1,3 +1,4 @@
+import copy
 import random
 from collections.abc import Iterable
 from contextlib import AbstractContextManager
@@ -56,15 +57,24 @@ def test_comparisons():
     assert DoublyLinkedList([]) == DoublyLinkedList([])
     assert DoublyLinkedList([1]) == DoublyLinkedList([1])
 
+    assert DoublyLinkedList([2]) != DoublyLinkedList([])
     assert DoublyLinkedList([2]) != DoublyLinkedList([1])
 
-    assert DoublyLinkedList([2]) > DoublyLinkedList([1])
     assert DoublyLinkedList([1]) < DoublyLinkedList([2])
+    assert DoublyLinkedList([]) < DoublyLinkedList([1])
     assert DoublyLinkedList([1, 2]) < DoublyLinkedList([2])
+
+    assert DoublyLinkedList([2]) > DoublyLinkedList([1])
+    assert DoublyLinkedList([2]) > DoublyLinkedList([])
     assert DoublyLinkedList([2, 1]) > DoublyLinkedList([-1, 0, 1])
 
+    assert DoublyLinkedList([]) <= DoublyLinkedList([2, 1])
     assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([2, 1])
+    assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([3])
+
+    assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([])
     assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([1, 2])
+    assert DoublyLinkedList([2]) >= DoublyLinkedList([1, 2])
 
 
 @pytest.mark.parametrize(
@@ -257,3 +267,45 @@ def test_reversed(it: list[int]):
     lst = DoublyLinkedList(it=icopy)
 
     assert tuple(reversed(lst)) == tuple(reversed(icopy))
+
+
+@pytest.mark.parametrize("it", [[], [1, "2", [3, [4, 5]]]])
+def test_copy(it: Iterable):
+    lst = DoublyLinkedList(it)
+
+    assert copy.copy(lst) == lst
+
+
+@pytest.mark.parametrize(
+    ("it1", "it2"),
+    [
+        ([], []),
+        ([1], [2, 3]),
+        ([4, 2], [1, 3, 5]),
+    ],
+)
+def test_add(it1: list, it2: list):
+    lst = DoublyLinkedList(it=it1)
+    answer = it1 + it2
+
+    assert (lst + it2) == answer
+
+    lst += it2
+    assert lst == answer
+
+
+@pytest.mark.parametrize("lst", [[], [1, 2]])
+@pytest.mark.parametrize("nbr", [-1, 0, 1, 2])
+def test_mul(lst: list, nbr: int):
+    dlist = DoublyLinkedList(it=lst)
+
+    assert (dlist * nbr) == (lst * nbr)
+
+
+@pytest.mark.parametrize("lst", [[], [8], [4, 1], [3, 5, 1, 2, 1, 6, 3, 4]])
+def test_sort(lst: list):
+    dlist = DoublyLinkedList(it=lst)
+
+    dlist.sort()
+
+    assert dlist == sorted(lst)
