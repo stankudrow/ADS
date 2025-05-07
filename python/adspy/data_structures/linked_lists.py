@@ -2,6 +2,7 @@
 
 from collections.abc import Iterable, Iterator, MutableSequence
 from functools import total_ordering
+from sys import maxsize as MAX_INT
 from typing import Any
 
 from typing_extensions import Self
@@ -14,7 +15,7 @@ class _DoublyLinkedNode:
 
     __slots__ = ("value", "_prev", "_next")
 
-    def __init__(self, value: Any = None) -> None:
+    def __init__(self, value: Any = None, /) -> None:
         self.value = value
         self._prev: _DoublyLinkedNode | None = None
         self._next: _DoublyLinkedNode | None = None
@@ -24,14 +25,14 @@ class _DoublyLinkedNode:
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
-        return f"{cls_name}(value={self.value!r})"
+        return f"{cls_name}({self.value!r})"
 
     @property
     def prev(self) -> "_DoublyLinkedNode | None":
         return self._prev
 
     @prev.setter
-    def prev(self, node: "_DoublyLinkedNode | None") -> None:
+    def prev(self, node: "_DoublyLinkedNode | None", /) -> None:
         self._prev = node if isinstance(node, _DoublyLinkedNode) else None
 
     @property
@@ -39,7 +40,7 @@ class _DoublyLinkedNode:
         return self._next
 
     @next.setter
-    def next(self, node: "_DoublyLinkedNode | None") -> None:
+    def next(self, node: "_DoublyLinkedNode | None", /) -> None:
         self._next = node if isinstance(node, _DoublyLinkedNode) else None
 
 
@@ -55,7 +56,7 @@ class DoublyLinkedList(MutableSequence):
 
     __slots__ = ("_head", "_tail", "_length")
 
-    def __init__(self, it: None | Iterable = None) -> None:
+    def __init__(self, it: None | Iterable = None, /) -> None:
         self._head: _DoublyLinkedNode | None = None
         self._tail: _DoublyLinkedNode | None = None
         self._length: int = 0
@@ -75,15 +76,15 @@ class DoublyLinkedList(MutableSequence):
         return value in tuple(self)
 
     def __copy__(self) -> Self:
-        return type(self)(self)
+        return self.copy()
 
-    def _get_normalised_index(self, index: int) -> int:
+    def _get_normalised_index(self, index: int, /) -> int:
         idx = index if index > -1 else len(self) + index
         return 0 if idx < 0 else idx
 
     def _get_indices(self, key: int | slice) -> tuple[int, ...]:
         if isinstance(key, int):
-            key = self._get_normalised_index(index=key)
+            key = self._get_normalised_index(key)
             key = slice(key, key + 1, 1)
         return tuple(range(key.start, key.stop, key.step))
 
@@ -152,7 +153,7 @@ class DoublyLinkedList(MutableSequence):
     def __repr__(self) -> str:
         cls_name = type(self).__name__
         it = tuple(self)
-        return f"{cls_name}(it={it})"
+        return f"{cls_name}({it})"
 
     def __reversed__(self) -> Iterator:
         tail = self._tail
@@ -181,9 +182,8 @@ class DoublyLinkedList(MutableSequence):
             for idx in tuple(idx_values.keys()):
                 self.append(idx_values.pop(idx))
 
-    def append(self, value: Any) -> None:
+    def append(self, value: Any, /) -> None:
         """Append (add at the end) a value."""
-
         node = _DoublyLinkedNode(value)
         if self._tail is None:
             self._tail = node
@@ -193,6 +193,18 @@ class DoublyLinkedList(MutableSequence):
             node.prev = self._tail
             self._tail = node
         self._length += 1
+
+    def copy(self) -> Self:
+        """Return the copy of the list."""
+        return type(self)(self)
+
+    def count(self, value: Any, /) -> int:
+        """Return the number of occurrences of `value`."""
+        cnt = 0
+        for item in self:
+            if item == value:
+                cnt += 1
+        return cnt
 
     def _detach(self, node: None | _DoublyLinkedNode) -> None:
         if node is None:
@@ -216,29 +228,63 @@ class DoublyLinkedList(MutableSequence):
 
     def clear(self) -> None:
         """Remove all elements from the list."""
-
         for node in self._yield_nodes():
             self._detach(node)
 
-    def extend(self, it: Iterable) -> None:
+    def extend(self, it: Iterable, /) -> None:
         """Append the items from the `it`erable."""
-
         for item in it:
             self.append(item)
 
-    def insert(self, index: int, value: Any) -> None:
-        """Insert a value in the list at the `index`."""
+    def index(self, value: Any, start: int = 0, stop: int = MAX_INT) -> int:
+        """Return the index of the first occurrence of the value.
 
+        The start parametre (default 0) marks the start index.
+
+        Raises
+        ------
+        ValueError
+            if the value is not present
+        """
+        istart = self._get_normalised_index(start)
+        istop = self._get_normalised_index(stop)
+        if istart > istop:
+            raise ValueError
+
+        it = iter(self)
+        for _ in range(istart):
+            try:
+                next(it)
+            except StopIteration as e:
+                raise ValueError from e
+
+        for idx, item in enumerate(it, istart):
+            if idx >= istop:
+                break
+            if item == value:
+                return idx
+        raise ValueError from None
+
+    def insert(self, index: int, value: Any, /) -> None:
+        """Insert a value in the list at the given index.
+
+        Parameters
+        ----------
+        index : int
+        value : Any
+
+        Returns
+        -------
+        None
+        """
         pidx = self._get_normalised_index(index)
-
         if not pidx:
             self.prepend(value)
             return
         if pidx < 0:
             self.append(value)
             return
-
-        new_node = _DoublyLinkedNode(value=value)
+        new_node = _DoublyLinkedNode(value)
         for idx, node in enumerate(self._yield_nodes()):
             if idx == pidx:
                 # mypy treats the `prev_node` value of type None | Node
@@ -252,31 +298,19 @@ class DoublyLinkedList(MutableSequence):
                 self._length += 1
                 break
 
-    def remove(self, value: Any) -> None:
-        """Remove the first occurence of the value."""
-
-        for node in self._yield_nodes():
-            if node.value == value:
-                self._detach(node)
-                break
-
-    def pop(self, index: int = -1) -> Any:
+    def pop(self, index: int = -1, /) -> Any:
         """Remove the node with the `index`."""
-
-        nonneg_idx = self._get_normalised_index(index=index)
-
+        nonneg_idx = self._get_normalised_index(index)
         for idx, node in enumerate(self._yield_nodes()):
             if idx == nonneg_idx:
                 value = node.value
                 self._detach(node)
                 return value
-
         msg = f"bad index={index}"
         raise IndexError(msg)
 
-    def prepend(self, value: Any) -> None:
+    def prepend(self, value: Any, /) -> None:
         """Prepend (add at the beginning) a value."""
-
         node = _DoublyLinkedNode(value)
         if self._head is None:
             self._tail = node
@@ -287,7 +321,22 @@ class DoublyLinkedList(MutableSequence):
             self._head = node
         self._length += 1
 
+    def remove(self, value: Any, /) -> None:
+        """Remove the first occurence of the value."""
+        for node in self._yield_nodes():
+            if node.value == value:
+                self._detach(node)
+                break
+
+    def reverse(self) -> None:
+        """Reverse the list in place."""
+        dlist = type(self)()
+        while self:
+            dlist.append(self.pop())
+        self.extend(dlist)
+
     def sort(self) -> None:
+        """Sort the list in place."""
         items = merge_sort(tuple(self))
         self.clear()
         self.extend(items)
