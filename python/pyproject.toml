@@ -10,7 +10,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Other Audience",
-    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
@@ -26,6 +25,9 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Software Development :: Version Control :: Git",
     "Typing :: Typed",
+]
+dependencies = [
+    "typing-extensions>=4.12.2",
 ]
 
 [project.optional-dependencies]
