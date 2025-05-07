@@ -47,12 +47,6 @@ def test_extend(it: Iterable):
     assert len(lst) == len(seq)
 
 
-def test_from_iterable():
-    it = (1, "2", [3])
-
-    assert DoublyLinkedList.from_iterable(it) == DoublyLinkedList(it)
-
-
 def test_comparisons():
     assert DoublyLinkedList([]) == DoublyLinkedList([])
     assert DoublyLinkedList([1]) == DoublyLinkedList([1])

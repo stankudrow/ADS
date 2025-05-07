@@ -55,12 +55,6 @@ class DoublyLinkedList(MutableSequence):
 
     __slots__ = ("_head", "_tail", "_length")
 
-    @classmethod
-    def from_iterable(cls, it: Iterable) -> Self:
-        """Return a "(Doubly) Linked List" instance from the `it`erable."""
-
-        return cls(it)
-
     def __init__(self, it: None | Iterable = None) -> None:
         self._head: _DoublyLinkedNode | None = None
         self._tail: _DoublyLinkedNode | None = None
