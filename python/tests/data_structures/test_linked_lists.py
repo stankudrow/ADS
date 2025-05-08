@@ -15,10 +15,10 @@ from adspy.data_structures.linked_lists import DoublyLinkedList
 
 def test_is_mutable_sequence():
     dlist = DoublyLinkedList()
-    lst: MutableSequence
-    for lst in ([], dlist):
-        assert isinstance(lst, MutableSequence)
-        assert issubclass(type(lst), MutableSequence)
+    ms: MutableSequence
+    for ms in ([], dlist):
+        assert isinstance(ms, MutableSequence)
+        assert issubclass(type(ms), MutableSequence)
 
 
 @pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
@@ -243,7 +243,7 @@ def test_insert():
     idx, val = 0, 21
     lst.insert(idx, val)
     dlist.insert(idx, val)
-    assert lst == dlist
+    assert dlist == lst
 
     lst.clear()
     dlist.clear()
@@ -251,7 +251,7 @@ def test_insert():
     idx = -1
     lst.insert(idx, val)
     dlist.insert(idx, val)
-    assert lst == dlist
+    assert dlist == lst
 
     for i in (0, -1, 2, -2, -3, 4):
         new_val = val * i
