@@ -45,16 +45,20 @@ def _quick_sort(
     pidx = randint(left, right)
     pivot = lst[pidx]
     # partitioning
-    l, r = left, right
-    while l < r:
-        while (l < r) and _compare(lst[l], pivot, key=key, cmp=cmp):
-            l += 1
-        while (l < r) and (not _compare(lst[r], pivot, key=key, cmp=cmp)):
-            r -= 1
-        if l != r:
-            lst[l], lst[r] = lst[r], lst[l]
-    _quick_sort(lst, left, r - 1, key=key, cmp=cmp)
-    _quick_sort(lst, r, right, key=key, cmp=cmp)
+    lefter, righter = left, right
+    while lefter < righter:
+        while (lefter < righter) and _compare(
+            lst[lefter], pivot, key=key, cmp=cmp
+        ):
+            lefter += 1
+        while (lefter < righter) and (
+            not _compare(lst[righter], pivot, key=key, cmp=cmp)
+        ):
+            righter -= 1
+        if lefter != righter:
+            lst[lefter], lst[righter] = lst[righter], lst[lefter]
+    _quick_sort(lst, left, righter - 1, key=key, cmp=cmp)
+    _quick_sort(lst, righter, right, key=key, cmp=cmp)
 
 
 def quick_sort(
