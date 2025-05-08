@@ -1,6 +1,6 @@
 import copy
 import random
-from collections.abc import Iterable
+from collections.abc import Iterable, MutableSequence
 from contextlib import AbstractContextManager
 from contextlib import nullcontext as does_not_raise
 from sys import maxsize
@@ -11,6 +11,14 @@ import pytest
 from adspy.algorithms.searching import linear_search
 from adspy.algorithms.sorting import merge_sort, quick_sort
 from adspy.data_structures.linked_lists import DoublyLinkedList
+
+
+def test_is_mutable_sequence():
+    dlist = DoublyLinkedList()
+    lst: MutableSequence
+    for lst in ([], dlist):
+        assert isinstance(lst, MutableSequence)
+        assert issubclass(type(lst), MutableSequence)
 
 
 @pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
@@ -160,21 +168,19 @@ def test_remove():
 
 def test_pop():
     it = random.sample(range(100), 10)
-    lst = DoublyLinkedList(it)
+    dlist = DoublyLinkedList(it)
 
-    while lst:
-        idx = random.choice(range(len(lst)))
-
-        lst.pop(idx)
+    while dlist:
+        idx = random.choice(range(len(dlist)))
+        dlist.pop(idx)
         it.pop(idx)
-
-        assert lst == it
-
-    with pytest.raises(IndexError):
-        lst.pop()
+        assert dlist == it
 
     with pytest.raises(IndexError):
-        lst.pop(100)
+        dlist.pop(0)
+
+    with pytest.raises(IndexError):
+        dlist.pop(-1)
 
 
 @pytest.mark.parametrize(
@@ -272,8 +278,13 @@ def test_reversing(it: list[int]):
 def test_copy(lst: list):
     dlist = DoublyLinkedList(lst)
 
-    assert copy.copy(dlist) == lst
-    assert lst.copy() == lst
+    copied = copy.copy(dlist)
+    assert isinstance(copied, DoublyLinkedList)
+    assert copied == lst
+
+    copied = dlist.copy()
+    assert isinstance(copied, DoublyLinkedList)
+    assert copied == lst
 
 
 @pytest.mark.parametrize(
@@ -354,3 +365,52 @@ def test_index(
         dindex = dlist.index(value, start, stop)
 
     assert dindex == lindex
+
+
+@pytest.mark.parametrize(
+    ("list1", "list2"),
+    [
+        ([], []),
+        ([], [1, 2]),
+        ([2, 3], []),
+        ([2, 1], [3, 4]),
+    ],
+)
+def test_extendleft(list1: list, list2: list):
+    dlist = DoublyLinkedList(list2)
+    dlist.extendleft(list1)
+    assert dlist == (list1 + list2)
+
+
+def test_popleft():
+    it = random.sample(range(100), 10)
+    dlist = DoublyLinkedList(it)
+
+    idx = 0
+    while dlist:
+        dlist.pop(idx)
+        it.pop(idx)
+        assert dlist == it
+
+    with pytest.raises(IndexError):
+        dlist.pop(idx)
+
+    with pytest.raises(IndexError):
+        dlist.pop(idx)
+
+
+def test_popright():
+    it = random.sample(range(100), 10)
+    dlist = DoublyLinkedList(it)
+
+    idx = -1
+    while dlist:
+        dlist.pop(idx)
+        it.pop(idx)
+        assert dlist == it
+
+    with pytest.raises(IndexError):
+        dlist.pop(idx)
+
+    with pytest.raises(IndexError):
+        dlist.pop(idx)

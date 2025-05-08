@@ -2,6 +2,7 @@
 
 from collections.abc import Iterable, Iterator, MutableSequence
 from functools import total_ordering
+from operator import attrgetter
 from sys import maxsize as MAX_INT
 from typing import Any
 
@@ -47,7 +48,8 @@ class _DoublyLinkedNode:
 # Linked lists
 
 
-class LinkedListError(Exception): ...
+class LinkedListError(Exception):
+    """Generic Linked List Error."""
 
 
 @total_ordering
@@ -65,7 +67,7 @@ class DoublyLinkedList(MutableSequence):
         self.extend(it or ())
 
     def __add__(self, other: Iterable) -> Self:
-        dlist = self.__copy__()
+        dlist = self.copy()
         dlist += other
         return dlist
 
@@ -103,13 +105,13 @@ class DoublyLinkedList(MutableSequence):
             self._detach(node)
 
     def __getitem__(self, key: int | slice) -> Any:
-        lst = type(self)()
+        dlist = type(self)()
         indices = set(self._check_indices(key=key))
         for idx, node in enumerate(self._yield_nodes()):
             if idx not in indices:
                 continue
-            lst.append(node)
-        return lst
+            dlist.append(node)
+        return dlist
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
@@ -127,11 +129,14 @@ class DoublyLinkedList(MutableSequence):
             self.extend(items)
         return self
 
-    def _yield_nodes(self) -> Iterator[_DoublyLinkedNode]:
-        node = self._head
+    def _yield_nodes(
+        self, *, reverse: bool = False
+    ) -> Iterator[_DoublyLinkedNode]:
+        node = self._tail if reverse else self._head
+        op = attrgetter("prev" if reverse else "next")
         while node:
             yield node
-            node = node.next
+            node = op(node)
 
     def __iter__(self) -> Iterator:
         for node in self._yield_nodes():
@@ -146,7 +151,7 @@ class DoublyLinkedList(MutableSequence):
         return NotImplemented
 
     def __mul__(self, nbr: int) -> Self:
-        dlist = self.__copy__()
+        dlist = self.copy()
         dlist *= nbr
         return dlist
 
@@ -183,7 +188,7 @@ class DoublyLinkedList(MutableSequence):
                 self.append(idx_values.pop(idx))
 
     def append(self, value: Any, /) -> None:
-        """Append (add at the end) a value."""
+        """Append the value."""
         node = _DoublyLinkedNode(value)
         if self._tail is None:
             self._tail = node
@@ -193,18 +198,6 @@ class DoublyLinkedList(MutableSequence):
             node.prev = self._tail
             self._tail = node
         self._length += 1
-
-    def copy(self) -> Self:
-        """Return the copy of the list."""
-        return type(self)(self)
-
-    def count(self, value: Any, /) -> int:
-        """Return the number of occurrences of `value`."""
-        cnt = 0
-        for item in self:
-            if item == value:
-                cnt += 1
-        return cnt
 
     def _detach(self, node: None | _DoublyLinkedNode) -> None:
         if node is None:
@@ -227,14 +220,31 @@ class DoublyLinkedList(MutableSequence):
         del node
 
     def clear(self) -> None:
-        """Remove all elements from the list."""
+        """Remove all elements."""
         for node in self._yield_nodes():
             self._detach(node)
+
+    def copy(self) -> Self:
+        """Return the copy of the list."""
+        return type(self)(self)
+
+    def count(self, value: Any, /) -> int:
+        """Return the number of occurrences of the value."""
+        cnt = 0
+        for item in self:
+            if item == value:
+                cnt += 1
+        return cnt
 
     def extend(self, it: Iterable, /) -> None:
         """Append the items from the `it`erable."""
         for item in it:
             self.append(item)
+
+    def extendleft(self, it: Iterable, /) -> None:
+        """Prepend the items from the `it`erable."""
+        for item in reversed(tuple(it)):
+            self.prepend(item)
 
     def index(self, value: Any, start: int = 0, stop: int = MAX_INT) -> int:
         """Return the index of the first occurrence of the value.
@@ -299,7 +309,11 @@ class DoublyLinkedList(MutableSequence):
                 break
 
     def pop(self, index: int = -1, /) -> Any:
-        """Remove the node with the `index`."""
+        """Return with removal the value at the index."""
+        if index == -1:
+            return self.popright()
+        if not index:
+            return self.popleft()
         nonneg_idx = self._get_normalised_index(index)
         for idx, node in enumerate(self._yield_nodes()):
             if idx == nonneg_idx:
@@ -309,8 +323,49 @@ class DoublyLinkedList(MutableSequence):
         msg = f"bad index={index}"
         raise IndexError(msg)
 
+    def popleft(self) -> Any:
+        """Return with removal the leftmost item.
+
+        Raises
+        ------
+        IndexError
+            when popping from an empty list.
+
+        Returns
+        -------
+        Any
+            the first/head item of the list
+        """
+        node = self._head
+        if node := self._head:
+            value = node.value
+            self._detach(node)
+            return value
+        msg = "cannot pop from an empty list"
+        raise IndexError(msg)
+
+    def popright(self) -> Any:
+        """Return with removal the rightmost item.
+
+        Raises
+        ------
+        IndexError
+            when popping from an empty list.
+
+        Returns
+        -------
+        Any
+            the last/tail item of the list
+        """
+        if node := self._tail:
+            value = node.value
+            self._detach(node)
+            return value
+        msg = "cannot pop from an empty list"
+        raise IndexError(msg)
+
     def prepend(self, value: Any, /) -> None:
-        """Prepend (add at the beginning) a value."""
+        """Prepend the value."""
         node = _DoublyLinkedNode(value)
         if self._head is None:
             self._tail = node
@@ -329,14 +384,14 @@ class DoublyLinkedList(MutableSequence):
                 break
 
     def reverse(self) -> None:
-        """Reverse the list in place."""
+        """Reverse in place."""
         dlist = type(self)()
         while self:
             dlist.append(self.pop())
         self.extend(dlist)
 
     def sort(self) -> None:
-        """Sort the list in place."""
+        """Sort in place."""
         items = merge_sort(tuple(self))
         self.clear()
         self.extend(items)
