@@ -1,0 +1,29 @@
+#[doc('list available rules')]
+default:
+	just --list
+
+#[doc('build the project')]
+build:
+	uv build
+
+#[doc('install the dependencies')]
+sync:
+	uv sync --group lint --group test
+
+#[doc('check code')]
+check:
+	uv run ruff format --check
+	uv run ruff check
+	uv run mypy
+
+#[doc('format code')]
+format:
+	uv run ruff format
+
+#[doc('format and lint code')]
+lint: format
+	uv run ruff check --fix .
+
+#[doc('run tests')]
+test:
+	uv run pytest

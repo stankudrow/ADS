@@ -1,6 +1,6 @@
 [project]
 name = "adspy"
-version = "0.3.0"
+version = "0.4.0"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -10,7 +10,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Other Audience",
-    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
@@ -27,14 +26,21 @@ classifiers = [
     "Topic :: Software Development :: Version Control :: Git",
     "Typing :: Typed",
 ]
+dependencies = [
+    "typing-extensions>=4.12.2",
+]
 
-[project.optional-dependencies]
-dev = [
-    "mypy>=1.15.0",
-    "pytest>=8.3.4",
-    "pytest-random-order>=1.1.1",
-    "pytest-xdist>=3.6.1",
-    "ruff>=0.9.9",
+[dependency-groups]
+lint = [
+    "mypy>=1.16.1",
+    "ruff>=0.12.2",
+]
+test = [
+    "pytest>=8.4",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "pytest-random-order>=1.2.0",
+    "pytest-xdist>=3.8.0",
 ]
 
 [tool.mypy]
@@ -63,12 +69,14 @@ module = "pytest"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-minversion = "8.3"
+minversion = "8.4"
 addopts = [
     "-s",
     "-vvv",
+    "--maxfail=1",
     "--random-order"
 ]
+xfail_strict = true
 testpaths = [
     "tests",
 ]
@@ -94,40 +102,53 @@ select = [
     "B",  # flake8-bugbear
     "BLE",  # flake8-blind-except
     "C4",  # flake8-comprehensions
+    "C90",  # mccabe
+    # "D",  # pydocstyle  # for now
+    "E",  # pycodestyle (Error)
     "EM",  # flake8-errmsg
     "ERA",  # eradicate
-    "F",  # pyflakes
+    "F",  # Pyflakes
+    "FA",  # flake8-future-annotations
     "FBT",  # flake8-boolean-trap
     "I",  # isort
     "ICN",  # flake8-import-conventions
     "ISC",  # flake8-implicit-str-concat
+    "N",  # pep8-naming
     "PIE",  # flake8-pie
     "PT",  # pytest-style
     "PYI",  # flake8-pyi
     "Q",  # flake8-quotes
     "RSE",  # flake8-raise
     "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "SLF",  # flake8-self
+    "SLOT",  # flake8-slots
     "T",  # flake8-print-linter
+    "T10",  # flake8-debugger
     "T20",  # flake8-print
     "TC",  # flake8-type-checking
     "TID",  # flake8-tidy-imports
     "UP",  # pyupgrade
+    "W",  # pycodestyle (Warning)
 ]
 ignore = [
     "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
     "ISC001",  # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/
 ]
 fixable = [
-    "ALL",
     "I",
     "ISC",
     "TC006"
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
-"__init__.py" = ["F401"]
+"adspy/*.py" = [
+    "D105",  # https://docs.astral.sh/ruff/rules/undocumented-magic-method/
+    "N812",  # https://docs.astral.sh/ruff/rules/lowercase-imported-as-non-lowercase/
+]
 "tests/*.py" = [
     "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/
+    "D",
     "FBT001"  # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
 ]
 
