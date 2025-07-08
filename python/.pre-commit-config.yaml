@@ -12,29 +12,10 @@ repos:
   - id: trailing-whitespace
 - repo: local
   hooks:
-  - id: ruff-format
-    alias: format
-    name: "ruff format --check files.py"
-    language: python
-    files: '^.*\.py$'
-    entry: ruff format
-    args: [--check]
-    verbose: true
-- repo: local
-  hooks:
   - id: check
     alias: lint
-    name: "check files.py"
-    language: python
+    name: "just check files.py"
+    language: system
     files: '^.*\.py$'
     entry: ruff check
-    verbose: true
-- repo: local
-  hooks:
-  - id: check-types
-    alias: types
-    name: "check types on files.py"
-    language: python
-    files: '^.*\.py$'
-    entry: mypy
     verbose: true

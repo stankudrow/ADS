@@ -1,5 +1,23 @@
 # Python Algorithms and Data Structures
 
+## v0.4.0
+
+Added:
+
+- Add `__(i)add__`, `__(i)mul__` operations, `__copy__`, `index` and comparision operations via `functools.total_ordering`.
+- Deque data structure (uses DoublyLinkedList).
+- Add more "ruff" rules.
+
+Changed:
+
+- Major updates on DoublyLinkedList.
+- Update imports.
+- Lint the `quick_sort` function.
+- Replace "Makefile" with "Justfile".
+- Update GHA workflow.
+- Update tests.
+- Update dependencies.
+
 ## v0.3.0
 
 Added:
