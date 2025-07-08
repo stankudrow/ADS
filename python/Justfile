@@ -14,7 +14,7 @@ sync:
 check:
 	ruff format --check
 	ruff check
-	ty check
+	mypy
 
 #[doc('format code')]
 format:
