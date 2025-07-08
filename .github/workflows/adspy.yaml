@@ -31,11 +31,23 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
 
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - uses: extractions/setup-just@v3
+
       - name: Install the project with dependencies
-        run: pip install ".[dev]"
+        run: just sync
+
+      - name: Build
+        run: just build
 
       - name: Check
-        run: make check
+        run: just check
 
       - name: Test
-        run: make test
+        run: just test
