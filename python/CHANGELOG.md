@@ -4,15 +4,19 @@
 
 Added:
 
-- DoublyLinkedList supports `__(i)add__`, `__(i)mul__` operations, copying via `__copy__`, in place methods `copy` with `reverse`, `index` method and all comparision operations via `functools.total_ordering`.
+- Add `__(i)add__`, `__(i)mul__` operations, `__copy__`, `index` and comparision operations via `functools.total_ordering`.
 - Deque data structure (uses DoublyLinkedList).
-- More `ruff` rules.
-- Makefile is replaced with Justfile.
+- Add more "ruff" rules.
 
 Changed:
 
-- DoublyLinkedList.extend method is fixed and simplified (uses self.append).
-- the `quick_sort` function is linted.
+- Major updates on DoublyLinkedList.
+- Update imports.
+- Lint the `quick_sort` function.
+- Replace "Makefile" with "Justfile".
+- Update GHA workflow.
+- Update tests.
+- Update dependencies.
 
 ## v0.3.0
 
