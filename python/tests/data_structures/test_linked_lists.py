@@ -139,7 +139,7 @@ class TestDoublyLinkedListSuite:
     )
     def test_delete_items(
         self,
-        it: Iterable,
+        it: list,
         key: int | slice,
         expectation: AbstractContextManager,
     ) -> None:
@@ -200,7 +200,7 @@ class TestDoublyLinkedListSuite:
     )
     def test_set_items(
         self,
-        it: Iterable,
+        it: list,
         key: int | slice,
         value: Any,
         expectation: AbstractContextManager,
@@ -246,14 +246,14 @@ class TestDoublyLinkedListSuite:
             (3, 123),
             (100, 456),
             (-100, 789),
-            (5, -321)
+            (5, -321),
         ]:
             lst.insert(idx, val)
             dlist.insert(idx, val)
             assert dlist == lst
 
     @pytest.mark.parametrize("it", [[], [0], [1, 2], [1, -1, 0]])
-    def test_reversing(self, it: Iterable) -> None:
+    def test_reversing(self, it: list) -> None:
         icopy = it.copy()
         lst = DoublyLinkedList(icopy)
         rev = tuple(reversed(icopy))
@@ -283,7 +283,7 @@ class TestDoublyLinkedListSuite:
             ([4, 2], [1, 3, 5]),
         ],
     )
-    def test_add(self, it1: Iterable, it2: Iterable) -> None:
+    def test_add(self, it1: list, it2: list) -> None:
         lst = DoublyLinkedList(it1)
         answer = it1 + it2
 
