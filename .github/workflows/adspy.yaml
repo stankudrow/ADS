@@ -31,9 +31,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
 
+      # https://github.com/astral-sh/setup-uv
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v6
         with:
+          # activate-environment: true
           python-version: ${{ matrix.python-version }}
 
       - uses: extractions/setup-just@v3
@@ -41,14 +43,11 @@ jobs:
       - name: Install the project with dependencies
         run: just sync
 
-      - name: Build
-        run: just build
-
-      - name: Activate venv
-        run: source .venv/bin/activate
-
       - name: Check
         run: just check
 
       - name: Test
         run: just test
+
+      - name: Build
+        run: just build
