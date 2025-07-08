@@ -82,6 +82,8 @@ class DoublyLinkedList(MutableSequence):
 
     def _get_normalised_index(self, index: int, /) -> int:
         idx = index if index > -1 else len(self) + index
+        if idx > (length := len(self)):
+            idx = length
         return 0 if idx < 0 else idx
 
     def _get_indices(self, key: int | slice) -> tuple[int, ...]:
@@ -291,7 +293,7 @@ class DoublyLinkedList(MutableSequence):
         if not pidx:
             self.prepend(value)
             return
-        if pidx < 0:
+        if pidx < 0 or pidx >= len(self):
             self.append(value)
             return
         new_node = _DoublyLinkedNode(value)
@@ -314,9 +316,9 @@ class DoublyLinkedList(MutableSequence):
             return self.popright()
         if not index:
             return self.popleft()
-        nonneg_idx = self._get_normalised_index(index)
+        pidx = self._get_normalised_index(index)
         for idx, node in enumerate(self._yield_nodes()):
-            if idx == nonneg_idx:
+            if idx == pidx:
                 value = node.value
                 self._detach(node)
                 return value

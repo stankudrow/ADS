@@ -21,396 +21,376 @@ def test_is_mutable_sequence():
         assert issubclass(type(ms), MutableSequence)
 
 
-@pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
-def test_prepend(elements: Iterable):
-    lst = DoublyLinkedList()
-    ans = list(elements)
+class TestDoublyLinkedListSuite:
+    @pytest.mark.parametrize("elements", [[], [1], (2, 3), "456"])
+    def test_prepend(self, elements: Iterable) -> None:
+        lst = DoublyLinkedList()
+        ans = list(elements)
 
-    for value in elements:
-        lst.prepend(value)
+        for value in elements:
+            lst.prepend(value)
 
-    assert lst == reversed(ans)
-    assert len(lst) == len(ans)
+        assert lst == reversed(ans)
+        assert len(lst) == len(ans)
 
+    @pytest.mark.parametrize("elements", [[], [1], (2, 3), "456"])
+    def test_append(self, elements: Iterable) -> None:
+        lst = DoublyLinkedList()
+        ans = list(elements)
 
-@pytest.mark.parametrize("elements", [[1], (2, 3), "456"])
-def test_append(elements: Iterable):
-    lst = DoublyLinkedList()
-    ans = list(elements)
+        for value in elements:
+            lst.append(value)
 
-    for value in elements:
-        lst.append(value)
+        assert lst == elements
+        assert len(lst) == len(ans)
 
-    assert lst == elements
-    assert len(lst) == len(ans)
+    @pytest.mark.parametrize("it", [[], [1], (2, 3), "456"])
+    def test_extend(self, it: Iterable) -> None:
+        lst = DoublyLinkedList()
+        seq = tuple(it)
 
+        lst.extend(it)
 
-@pytest.mark.parametrize("it", [[], "123"])
-def test_extend(it: Iterable):
-    lst = DoublyLinkedList()
-    seq = tuple(it)
+        assert lst == it
+        assert len(lst) == len(seq)
 
-    lst.extend(it)
+    def test_comparisons(self) -> None:
+        assert DoublyLinkedList([]) == DoublyLinkedList([])
+        assert DoublyLinkedList([1]) == DoublyLinkedList([1])
 
-    assert lst == it
-    assert len(lst) == len(seq)
+        assert DoublyLinkedList([2]) != DoublyLinkedList([])
+        assert DoublyLinkedList([2]) != DoublyLinkedList([1])
 
+        assert DoublyLinkedList([1]) < DoublyLinkedList([2])
+        assert DoublyLinkedList([]) < DoublyLinkedList([1])
+        assert DoublyLinkedList([1, 2]) < DoublyLinkedList([2])
 
-def test_comparisons():
-    assert DoublyLinkedList([]) == DoublyLinkedList([])
-    assert DoublyLinkedList([1]) == DoublyLinkedList([1])
+        assert DoublyLinkedList([2]) > DoublyLinkedList([1])
+        assert DoublyLinkedList([2]) > DoublyLinkedList([])
+        assert DoublyLinkedList([2, 1]) > DoublyLinkedList([-1, 0, 1])
 
-    assert DoublyLinkedList([2]) != DoublyLinkedList([])
-    assert DoublyLinkedList([2]) != DoublyLinkedList([1])
+        assert DoublyLinkedList([]) <= DoublyLinkedList([2, 1])
+        assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([2, 1])
+        assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([3])
 
-    assert DoublyLinkedList([1]) < DoublyLinkedList([2])
-    assert DoublyLinkedList([]) < DoublyLinkedList([1])
-    assert DoublyLinkedList([1, 2]) < DoublyLinkedList([2])
+        assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([])
+        assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([1, 2])
+        assert DoublyLinkedList([2]) >= DoublyLinkedList([1, 2])
 
-    assert DoublyLinkedList([2]) > DoublyLinkedList([1])
-    assert DoublyLinkedList([2]) > DoublyLinkedList([])
-    assert DoublyLinkedList([2, 1]) > DoublyLinkedList([-1, 0, 1])
+    @pytest.mark.parametrize(
+        ("it", "value", "answer"),
+        [([], 1, False), ([1], 1, True), ([1], 0, False)],
+    )
+    def test_contains(self, it: Iterable, value: int, answer: bool) -> None:
+        assert bool(value in DoublyLinkedList(it)) == answer
 
-    assert DoublyLinkedList([]) <= DoublyLinkedList([2, 1])
-    assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([2, 1])
-    assert DoublyLinkedList([2, 1]) <= DoublyLinkedList([3])
+    @pytest.mark.parametrize(
+        ("it", "key", "expectation"),
+        [
+            ([], 0, pytest.raises(IndexError)),
+            ([1], 0, does_not_raise()),
+            ([1], -1, does_not_raise()),
+            ([], slice(0, 3, 1), does_not_raise()),
+            ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
+        ],
+    )
+    def test_get_items(
+        self,
+        it: Iterable,
+        key: int | slice,
+        expectation: AbstractContextManager,
+    ):
+        lst = DoublyLinkedList(it)
 
-    assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([])
-    assert DoublyLinkedList([1, 2]) >= DoublyLinkedList([1, 2])
-    assert DoublyLinkedList([2]) >= DoublyLinkedList([1, 2])
+        lst_elems = None
+        with expectation:
+            lst_elems = lst[key]
 
+        it_elems = None
+        with expectation:
+            it_elems = lst[key]
 
-@pytest.mark.parametrize(
-    ("it", "value", "answer"), [([], 1, False), ([1], 1, True), ([1], 0, False)]
-)
-def test_contains(it: list[int], value: int, answer: bool):
-    assert bool(value in DoublyLinkedList(it)) == answer
+        assert it_elems == lst_elems
 
+    @pytest.mark.parametrize("it", [[], [1], [-1, 0, 1]])
+    def test_clear(self, it: Iterable) -> None:
+        lst = DoublyLinkedList(it)
 
-@pytest.mark.parametrize(
-    ("it", "key", "expectation"),
-    [
-        ([], 0, pytest.raises(IndexError)),
-        ([1], 0, does_not_raise()),
-        ([1], -1, does_not_raise()),
-        ([], slice(0, 3, 1), does_not_raise()),
-        ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
-    ],
-)
-def test_get_items(
-    it: list[int], key: int | slice, expectation: AbstractContextManager
-):
-    lst = DoublyLinkedList(it)
+        lst.clear()
 
-    lst_elems = None
-    with expectation:
-        lst_elems = lst[key]
+        assert not len(lst)
+        assert not tuple(lst)
 
-    it_elems = None
-    with expectation:
-        it_elems = lst[key]
+        with pytest.raises(IndexError):
+            lst[0]
 
-    assert it_elems == lst_elems
+    @pytest.mark.parametrize(
+        ("it", "key", "expectation"),
+        [
+            ([], 0, pytest.raises(IndexError)),
+            ([1], 0, does_not_raise()),
+            ([1], -1, does_not_raise()),
+            ([], slice(0, 3, 1), does_not_raise()),
+            ([2], slice(0, 3, 1), does_not_raise()),
+            ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
+            ([1, 1, 1, 1], slice(1, 3, 1), does_not_raise()),
+            ([1, 3, 1, 1, 2], -3, does_not_raise()),
+        ],
+    )
+    def test_delete_items(
+        self,
+        it: Iterable,
+        key: int | slice,
+        expectation: AbstractContextManager,
+    ) -> None:
+        lst = DoublyLinkedList(it)
 
+        with expectation:
+            del it[key]
 
-@pytest.mark.parametrize("it", [[], [1], [-1, 0, 1]])
-def test_clear(it: list[int]):
-    lst = DoublyLinkedList(it)
-
-    lst.clear()
-
-    assert len(lst) == 0
-    assert not tuple(lst)
-
-    with pytest.raises(IndexError):
-        lst[0]
-
-
-@pytest.mark.parametrize(
-    ("it", "key", "expectation"),
-    [
-        ([], 0, pytest.raises(IndexError)),
-        ([1], 0, does_not_raise()),
-        ([1], -1, does_not_raise()),
-        ([], slice(0, 3, 1), does_not_raise()),
-        ([2], slice(0, 3, 1), does_not_raise()),
-        ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
-        ([1, 1, 1, 1], slice(1, 3, 1), does_not_raise()),
-        ([1, 3, 1, 1, 2], -3, does_not_raise()),
-    ],
-)
-def test_delete_items(
-    it: list[int], key: int | slice, expectation: AbstractContextManager
-):
-    lst = DoublyLinkedList(it)
-
-    with expectation:
-        del it[key]
-
-    with expectation:
-        del lst[key]
-
-    assert lst == it
-
-
-def test_remove():
-    it = random.sample(range(100), 10)
-    lst = DoublyLinkedList(it)
-
-    while lst:
-        item = random.choice(it)
-
-        lst.remove(item)
-        it.remove(item)
+        with expectation:
+            del lst[key]
 
         assert lst == it
 
+    def test_remove(self) -> None:
+        it = random.sample(range(100), 10)
+        lst = DoublyLinkedList(it)
 
-def test_pop():
-    it = random.sample(range(100), 10)
-    dlist = DoublyLinkedList(it)
+        while lst:
+            item = random.choice(it)
 
-    while dlist:
-        idx = random.choice(range(len(dlist)))
-        dlist.pop(idx)
-        it.pop(idx)
-        assert dlist == it
+            lst.remove(item)
+            it.remove(item)
 
-    with pytest.raises(IndexError):
-        dlist.pop(0)
+            assert lst == it
 
-    with pytest.raises(IndexError):
-        dlist.pop(-1)
+    def test_pop(self) -> None:
+        it = random.sample(range(100), 10)
+        dlist = DoublyLinkedList(it)
 
+        while dlist:
+            idx = random.choice(range(len(dlist)))
+            dlist.pop(idx)
+            it.pop(idx)
+            assert dlist == it
 
-@pytest.mark.parametrize(
-    ("it", "key", "value", "expectation"),
-    [
-        ([], -1, 0, pytest.raises(IndexError)),
-        ([], slice(-1, 0, 1), [3], does_not_raise()),
-        ([], slice(1, 3, 1), [3], does_not_raise()),
-        ([1], slice(0, 3, 1), [3], does_not_raise()),
-        ([2], slice(1, 3, 1), [3], does_not_raise()),
-        ([1], 0, "2", does_not_raise()),
-        ([1, 2], -1, "a", does_not_raise()),
-        ([3, 4, 5], slice(0, 3, 2), [-1, 1], does_not_raise()),
-        ([1, 1, 1, 1], slice(1, 3, 1), [2, 3], does_not_raise()),
-        ([1, 3, 1, 1, 2], 2, "T", does_not_raise()),
-        ([1, 2, 3], 2, [2, 3], does_not_raise()),
-        ([3, 2, 1], slice(0, 2, 1), 21, pytest.raises(TypeError)),
-    ],
-)
-def test_set_items(
-    it: list[int],
-    key: int | slice,
-    value: Any,
-    expectation: AbstractContextManager,
-):
-    lst = DoublyLinkedList(it)
+        with pytest.raises(IndexError):
+            dlist.pop(0)
 
-    with expectation:
-        it[key] = value
+        with pytest.raises(IndexError):
+            dlist.pop(-1)
 
-    with expectation:
-        lst[key] = value
+    @pytest.mark.parametrize(
+        ("it", "key", "value", "expectation"),
+        [
+            ([], -1, 0, pytest.raises(IndexError)),
+            ([], slice(-1, 0, 1), [3], does_not_raise()),
+            ([], slice(1, 3, 1), [3], does_not_raise()),
+            ([1], slice(0, 3, 1), [3], does_not_raise()),
+            ([2], slice(1, 3, 1), [3], does_not_raise()),
+            ([1], 0, "2", does_not_raise()),
+            ([1, 2], -1, "a", does_not_raise()),
+            ([3, 4, 5], slice(0, 3, 2), [-1, 1], does_not_raise()),
+            ([1, 1, 1, 1], slice(1, 3, 1), [2, 3], does_not_raise()),
+            ([1, 3, 1, 1, 2], 2, "T", does_not_raise()),
+            ([1, 2, 3], 2, [2, 3], does_not_raise()),
+            ([3, 2, 1], slice(0, 2, 1), 21, pytest.raises(TypeError)),
+        ],
+    )
+    def test_set_items(
+        self,
+        it: Iterable,
+        key: int | slice,
+        value: Any,
+        expectation: AbstractContextManager,
+    ) -> None:
+        lst = DoublyLinkedList(it)
 
-    assert lst == it
+        with expectation:
+            it[key] = value
 
+        with expectation:
+            lst[key] = value
 
-def test_searchability():
-    sample = (-1, 0, 1, -2, 2)
-    lst = DoublyLinkedList(sample)
+        assert lst == it
 
-    value = random.choice(sample)
+    def test_searchability(self) -> None:
+        sample = (-1, 0, 1, -2, 2)
+        lst = DoublyLinkedList(sample)
 
-    assert linear_search(lst, value) == sample.index(value)
+        value = random.choice(sample)
 
+        assert linear_search(lst, value) == sample.index(value)
 
-def test_sortability():
-    sample = random.sample(range(1, 100, 2), 20)
-    lst = DoublyLinkedList(sample)
+    def test_sortability(self) -> None:
+        sample = random.sample(range(1, 100, 2), 20)
+        lst = DoublyLinkedList(sample)
 
-    answer = sorted(sample)
+        answer = sorted(sample)
 
-    assert merge_sort(seq=lst) == answer
-    assert quick_sort(seq=lst) == answer
+        assert merge_sort(seq=lst) == answer
+        assert quick_sort(seq=lst) == answer
 
+    def test_insert(self) -> None:
+        lst: list[int] = []
+        dlist = DoublyLinkedList()
 
-def test_insert():
-    lst: list[int] = []
-    dlist = DoublyLinkedList()
+        for idx, val in [
+            (10, -1),
+            (0, 12),
+            (0, 21),
+            (1, 42),
+            (-1, 84),
+            (-2, 100),
+            (3, 123),
+            (100, 123456789),
+        ]:
+            lst.insert(idx, val)
+            dlist.insert(idx, val)
+            assert dlist == lst
 
-    idx, val = 0, 21
-    lst.insert(idx, val)
-    dlist.insert(idx, val)
-    assert dlist == lst
+    @pytest.mark.parametrize("it", [[], [0], [1, 2], [1, -1, 0]])
+    def test_reversing(self, it: Iterable) -> None:
+        icopy = it.copy()
+        lst = DoublyLinkedList(icopy)
+        rev = tuple(reversed(icopy))
 
-    lst.clear()
-    dlist.clear()
+        assert tuple(reversed(lst)) == rev
 
-    idx = -1
-    lst.insert(idx, val)
-    dlist.insert(idx, val)
-    assert dlist == lst
+        lst.reverse()
+        assert lst == rev
 
-    for i in (0, -1, 2, -2, -3, 4):
-        new_val = val * i
+    @pytest.mark.parametrize("it", [[], [1, "2", [3, [4, 5]]]])
+    def test_copy(self, it: Iterable) -> None:
+        dlist = DoublyLinkedList(it)
 
-        lst.insert(i, new_val)
-        dlist.insert(i, new_val)
+        copied = copy.copy(dlist)
+        assert isinstance(copied, DoublyLinkedList)
+        assert copied == it
 
-        assert dlist == lst
+        copied = dlist.copy()
+        assert isinstance(copied, DoublyLinkedList)
+        assert copied == it
 
+    @pytest.mark.parametrize(
+        ("it1", "it2"),
+        [
+            ([], []),
+            ([1], [2, 3]),
+            ([4, 2], [1, 3, 5]),
+        ],
+    )
+    def test_add(self, it1: Iterable, it2: Iterable) -> None:
+        lst = DoublyLinkedList(it1)
+        answer = it1 + it2
 
-@pytest.mark.parametrize("it", [[], [0], [1, 2], [1, -1, 0]])
-def test_reversing(it: list[int]):
-    icopy = it.copy()
-    lst = DoublyLinkedList(icopy)
-    rev = tuple(reversed(icopy))
+        assert (lst + it2) == answer
 
-    assert tuple(reversed(lst)) == rev
+        lst += it2
+        assert lst == answer
 
-    lst.reverse()
-    assert lst == rev
+    @pytest.mark.parametrize("lst", [[], [1, 2]])
+    @pytest.mark.parametrize("nbr", [-1, 0, 1, 2])
+    def test_mul(self, lst: list, nbr: int) -> None:
+        dlist = DoublyLinkedList(lst)
 
+        assert (dlist * nbr) == (lst * nbr)
 
-@pytest.mark.parametrize("lst", [[], [1, "2", [3, [4, 5]]]])
-def test_copy(lst: list):
-    dlist = DoublyLinkedList(lst)
+    @pytest.mark.parametrize("lst", [[], [8], [4, 1], [3, 5, 1, 2, 1, 6, 3, 4]])
+    def test_sort(self, lst: list) -> None:
+        dlist = DoublyLinkedList(lst)
 
-    copied = copy.copy(dlist)
-    assert isinstance(copied, DoublyLinkedList)
-    assert copied == lst
+        dlist.sort()
 
-    copied = dlist.copy()
-    assert isinstance(copied, DoublyLinkedList)
-    assert copied == lst
+        assert dlist == sorted(lst)
 
+    @pytest.mark.parametrize(
+        ("lst", "value"),
+        [
+            ([], 1),
+            ([1, 2, 1, 0, 1, 3], 1),
+        ],
+    )
+    def test_count(self, lst: list, value: Any) -> None:
+        dlist = DoublyLinkedList(lst)
+        assert dlist.count(value) == lst.count(value)
 
-@pytest.mark.parametrize(
-    ("it1", "it2"),
-    [
-        ([], []),
-        ([1], [2, 3]),
-        ([4, 2], [1, 3, 5]),
-    ],
-)
-def test_add(it1: list, it2: list):
-    lst = DoublyLinkedList(it1)
-    answer = it1 + it2
+    @pytest.mark.parametrize(
+        ("lst", "value", "start", "stop", "expectation"),
+        [
+            ([], 1, 0, maxsize, pytest.raises(ValueError)),  # noqa: PT011
+            ([2, 1, 3], 1, 1, maxsize, does_not_raise()),
+            ([2, 1, 3], 3, 2, maxsize, does_not_raise()),
+            ([2, 1, 3], 2, 2, maxsize, pytest.raises(ValueError)),  # noqa: PT011
+            ([2, 1, 3], 1, 2, maxsize, pytest.raises(ValueError)),  # noqa: PT011
+            ([2, 1, 3], 1, 3, maxsize, pytest.raises(ValueError)),  # noqa: PT011
+            ([2, 1, 3], 1, 0, 1, pytest.raises(ValueError)),  # noqa: PT011
+            ([2, 1, 3], 3, 0, 1, pytest.raises(ValueError)),  # noqa: PT011
+        ],
+    )
+    def test_index(
+        self,
+        lst: list,
+        value: Any,
+        start: int,
+        stop: int,
+        expectation: AbstractContextManager,
+    ) -> None:
+        dlist = DoublyLinkedList(lst)
 
-    assert (lst + it2) == answer
+        lindex = 0
+        with expectation:
+            lindex = lst.index(value, start, stop)
 
-    lst += it2
-    assert lst == answer
+        dindex = 0
+        with expectation:
+            dindex = dlist.index(value, start, stop)
 
+        assert dindex == lindex
 
-@pytest.mark.parametrize("lst", [[], [1, 2]])
-@pytest.mark.parametrize("nbr", [-1, 0, 1, 2])
-def test_mul(lst: list, nbr: int):
-    dlist = DoublyLinkedList(lst)
+    @pytest.mark.parametrize(
+        ("list1", "list2"),
+        [
+            ([], []),
+            ([], [1, 2]),
+            ([2, 3], []),
+            ([2, 1], [3, 4]),
+        ],
+    )
+    def test_extendleft(self, list1: list, list2: list) -> None:
+        dlist = DoublyLinkedList(list2)
+        dlist.extendleft(list1)
+        assert dlist == (list1 + list2)
 
-    assert (dlist * nbr) == (lst * nbr)
+    def test_popleft(self) -> None:
+        it = random.sample(range(100), 10)
+        dlist = DoublyLinkedList(it)
 
+        idx = 0
+        while dlist:
+            dlist.pop(idx)
+            it.pop(idx)
+            assert dlist == it
 
-@pytest.mark.parametrize("lst", [[], [8], [4, 1], [3, 5, 1, 2, 1, 6, 3, 4]])
-def test_sort(lst: list):
-    dlist = DoublyLinkedList(lst)
+        with pytest.raises(IndexError):
+            dlist.pop(idx)
 
-    dlist.sort()
+        with pytest.raises(IndexError):
+            dlist.pop(idx)
 
-    assert dlist == sorted(lst)
+    def test_popright(self) -> None:
+        it = random.sample(range(100), 10)
+        dlist = DoublyLinkedList(it)
 
+        idx = -1
+        while dlist:
+            dlist.pop(idx)
+            it.pop(idx)
+            assert dlist == it
 
-@pytest.mark.parametrize(
-    ("lst", "value"),
-    [
-        ([], 1),
-        ([1, 2, 1, 0, 1, 3], 1),
-    ],
-)
-def test_count(lst: list, value: Any):
-    dlist = DoublyLinkedList(lst)
-    assert dlist.count(value) == lst.count(value)
+        with pytest.raises(IndexError):
+            dlist.pop(idx)
 
-
-@pytest.mark.parametrize(
-    ("lst", "value", "start", "stop", "expectation"),
-    [
-        ([], 1, 0, maxsize, pytest.raises(ValueError)),  # noqa: PT011
-        ([2, 1, 3], 1, 1, maxsize, does_not_raise()),
-        ([2, 1, 3], 3, 2, maxsize, does_not_raise()),
-        ([2, 1, 3], 2, 2, maxsize, pytest.raises(ValueError)),  # noqa: PT011
-        ([2, 1, 3], 1, 2, maxsize, pytest.raises(ValueError)),  # noqa: PT011
-        ([2, 1, 3], 1, 3, maxsize, pytest.raises(ValueError)),  # noqa: PT011
-        ([2, 1, 3], 1, 0, 1, pytest.raises(ValueError)),  # noqa: PT011
-        ([2, 1, 3], 3, 0, 1, pytest.raises(ValueError)),  # noqa: PT011
-    ],
-)
-def test_index(
-    lst: list,
-    value: Any,
-    start: int,
-    stop: int,
-    expectation: AbstractContextManager,
-):
-    dlist = DoublyLinkedList(lst)
-
-    lindex = 0
-    with expectation:
-        lindex = lst.index(value, start, stop)
-
-    dindex = 0
-    with expectation:
-        dindex = dlist.index(value, start, stop)
-
-    assert dindex == lindex
-
-
-@pytest.mark.parametrize(
-    ("list1", "list2"),
-    [
-        ([], []),
-        ([], [1, 2]),
-        ([2, 3], []),
-        ([2, 1], [3, 4]),
-    ],
-)
-def test_extendleft(list1: list, list2: list):
-    dlist = DoublyLinkedList(list2)
-    dlist.extendleft(list1)
-    assert dlist == (list1 + list2)
-
-
-def test_popleft():
-    it = random.sample(range(100), 10)
-    dlist = DoublyLinkedList(it)
-
-    idx = 0
-    while dlist:
-        dlist.pop(idx)
-        it.pop(idx)
-        assert dlist == it
-
-    with pytest.raises(IndexError):
-        dlist.pop(idx)
-
-    with pytest.raises(IndexError):
-        dlist.pop(idx)
-
-
-def test_popright():
-    it = random.sample(range(100), 10)
-    dlist = DoublyLinkedList(it)
-
-    idx = -1
-    while dlist:
-        dlist.pop(idx)
-        it.pop(idx)
-        assert dlist == it
-
-    with pytest.raises(IndexError):
-        dlist.pop(idx)
-
-    with pytest.raises(IndexError):
-        dlist.pop(idx)
+        with pytest.raises(IndexError):
+            dlist.pop(idx)
