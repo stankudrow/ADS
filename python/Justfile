@@ -12,18 +12,18 @@ sync:
 
 #[doc('check code')]
 check:
-	ruff format --check
-	ruff check
-	mypy
+	uv run ruff format --check
+	uv run ruff check
+	uv run mypy
 
 #[doc('format code')]
 format:
-	ruff format
+	uv run ruff format
 
 #[doc('format and lint code')]
 lint: format
-	ruff check --fix .
+	uv run ruff check --fix .
 
 #[doc('run tests')]
 test:
-	pytest
+	uv run pytest
