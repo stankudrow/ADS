@@ -23,9 +23,10 @@ class Deque:
     def __init__(
         self, it: None | Iterable = None, maxlen: None | int = None
     ) -> None:
-        self._maxlen = -1
-        if maxlen is not None and maxlen > -1:
-            self._maxlen = maxlen
+        if maxlen and maxlen < 0:
+            msg = f"maxen={maxlen} nust be non-negative"
+            raise ValueError(msg)
+        self._maxlen = -1 if maxlen is None else maxlen
 
         self._lst = DoublyLinkedList()
         if it:
@@ -155,13 +156,11 @@ class Deque:
         -------
         None
         """
-        if not self.maxlen:
-            return
-        if len(self) == self.maxlen:
-            self.popleft()
+        if len(self) >= self.maxlen > -1:
+            msg = "deque already at its maximum size"
+            raise IndexError(msg)
         self._lst.insert(index, value)
 
-    # this signature is incompatible with MutableSequence interface
     def pop(self) -> Any:
         """Return with removal the rightmost value."""
         return self._lst.popright()

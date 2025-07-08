@@ -23,10 +23,10 @@ class TestDequeSuite:
     @pytest.mark.parametrize(
         ("it", "maxlen", "answer"),
         [
-            ([], -1, []),
+            ([], None, []),
             ([], 0, []),
             ([], 1, []),
-            ([42, 21], -1, [42, 21]),
+            ([42, 21], None, [42, 21]),
             ([42, 21], 0, []),
             ([42, 21], 1, [21]),
             ([42, 21], 2, [42, 21]),
@@ -129,7 +129,7 @@ class TestDequeSuite:
 
         dq.clear()
 
-        assert len(dq) == 0
+        assert not len(dq)
         assert not tuple(dq)
 
         with pytest.raises(IndexError):
@@ -194,41 +194,52 @@ class TestDequeSuite:
         assert dindex == aindex
 
     def test_insert(self) -> None:
-        ans: deque[int] = deque()
-        dq = Deque()
+        dq = Deque(maxlen=None)
+        deq: deque[int] = deque(maxlen=None)
 
-        idx, val = 0, 21
-        ans.insert(idx, val)
-        dq.insert(idx, val)
-        assert dq == ans
-
-        ans.clear()
-        dq.clear()
-
-        idx = -1
-        ans.insert(idx, val)
-        dq.insert(idx, val)
-        assert dq == ans
-
-        for i in (0, -1, 2, -2, -3, 4):
-            new_val = val * i
-
-            ans.insert(i, new_val)
-            dq.insert(i, new_val)
-
-            assert dq == ans
+        for idx, val in [
+            (1, 12),
+            (-1, 24),
+            (2, 13),
+            (-2, 67),
+            (10, 123),
+            (-10, 321),
+        ]:
+            dq.insert(idx, val)
+            deq.insert(idx, val)
+            assert dq == deq
 
     def test_insert_with_maxlen(self) -> None:
-        dq = Deque([1, 2, 3], maxlen=3)
+        maxlen = 5
+        dq = Deque(maxlen=maxlen)
+        deq: deque[int] = deque(maxlen=maxlen)
 
-        dq.insert(1, 12)
-        assert dq == [2, 12, 3]
+        for idx, val in [
+            (1, 12),
+            (-1, 24),
+            (2, 13),
+            (-2, 67),
+            (0, 45),
+        ]:
+            dq.insert(idx, val)
+            deq.insert(idx, val)
+            assert dq == deq
 
-        dq.insert(0, 21)
-        assert dq == [21, 12, 3]
+        with pytest.raises(IndexError):
+            dq.insert(0, -12)
 
-        dq.insert(-1, 42)
-        assert dq == [12, 42, 3]
+        with pytest.raises(IndexError):
+            deq.insert(0, -12)
+
+        maxlen = 0
+        dq = Deque(maxlen=maxlen)
+        deq = deque(maxlen=maxlen)
+
+        with pytest.raises(IndexError):
+            dq.insert(0, -12)
+
+        with pytest.raises(IndexError):
+            deq.insert(0, -12)
 
     def test_popleft(self) -> None:
         it = deque(random.sample(range(100), 10))
