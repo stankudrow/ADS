@@ -1,5 +1,19 @@
 # Python Algorithms and Data Structures
 
+## v0.4.0
+
+Added:
+
+- DoublyLinkedList supports `__(i)add__`, `__(i)mul__` operations, copying via `__copy__`, in place methods `copy` with `reverse`, `index` method and all comparision operations via `functools.total_ordering`.
+- Deque data structure (uses DoublyLinkedList).
+- More `ruff` rules.
+- Makefile is replaced with Justfile.
+
+Changed:
+
+- DoublyLinkedList.extend method is fixed and simplified (uses self.append).
+- the `quick_sort` function is linted.
+
 ## v0.3.0
 
 Added:
