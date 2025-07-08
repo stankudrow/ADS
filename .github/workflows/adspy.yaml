@@ -34,8 +34,6 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v6
         with:
-          activate-environment: true
-          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
       - uses: extractions/setup-just@v3
