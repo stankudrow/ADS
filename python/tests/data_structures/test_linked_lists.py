@@ -244,7 +244,9 @@ class TestDoublyLinkedListSuite:
             (-1, 84),
             (-2, 100),
             (3, 123),
-            (100, 123456789),
+            (100, 456),
+            (-100, 789),
+            (5, -321)
         ]:
             lst.insert(idx, val)
             dlist.insert(idx, val)
