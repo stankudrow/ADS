@@ -1,0 +1,21 @@
+#[doc('list available rules')]
+default:
+	just --list
+
+#[doc('check code')]
+check:
+	ruff format --check
+	ruff check
+	ty check
+
+#[doc('format code')]
+format:
+	ruff format
+
+#[doc('format and lint code')]
+lint: format
+	ruff check --fix .
+
+#[doc('run tests')]
+test:
+	pytest
