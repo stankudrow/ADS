@@ -23,12 +23,17 @@ class Deque:
     def __init__(
         self, it: None | Iterable = None, maxlen: None | int = None
     ) -> None:
-        self._lst = DoublyLinkedList(it)
-        self._maxlen = maxlen
+        self._maxlen = -1
+        if maxlen is not None and maxlen > -1:
+            self._maxlen = maxlen
+
+        self._lst = DoublyLinkedList()
+        if it:
+            self.extend(it)
 
     @property
-    def maxlen(self) -> None | int:
-        """Return maxlen attribute value."""
+    def maxlen(self) -> int:
+        """Return the maxlen attribute value."""
         return self._maxlen
 
     def __add__(self, other: Iterable) -> Self:
@@ -88,10 +93,18 @@ class Deque:
 
     def append(self, value: Any, /) -> None:
         """Append the value."""
+        if not self.maxlen:
+            return
+        if len(self) == self.maxlen:
+            self.popleft()
         self._lst.append(value)
 
     def appendleft(self, value: Any, /) -> None:
         """Prepend the value."""
+        if not self.maxlen:
+            return
+        if len(self) == self.maxlen:
+            self.pop()
         self._lst.prepend(value)
 
     def clear(self) -> None:
@@ -108,11 +121,15 @@ class Deque:
 
     def extend(self, it: Iterable, /) -> None:
         """Append the items from the `it`erable."""
-        self._lst.extend(it)
+        # not optimal, but efficient
+        for item in it:
+            self.append(item)
 
     def extendleft(self, it: Iterable, /) -> None:
         """Prepend the items from the `it`erable."""
-        self._lst.extendleft(it)
+        # not optimal, but efficient
+        for item in it:
+            self.appendleft(item)
 
     def index(self, value: Any, start: int = 0, stop: int = MAX_INT) -> int:
         """Return the index of the first occurrence of the value.
@@ -138,6 +155,10 @@ class Deque:
         -------
         None
         """
+        if not self.maxlen:
+            return
+        if len(self) == self.maxlen:
+            self.popleft()
         self._lst.insert(index, value)
 
     # this signature is incompatible with MutableSequence interface
