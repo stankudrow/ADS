@@ -1,6 +1,25 @@
 # Python Algorithms and Data Structures
 
-## v0.4.0
+## v0.5.0
+
+Fixes the v0.4.0 with some breaking changes.
+
+Added:
+
+- add the `rotate` method to the Deque.
+
+Changed:
+
+- Make the Deque's `__repr__` method and the `maxlen` property more consistent with the Python's `deque`.
+- Reorganise modules.
+- Simplify tests.
+- Groom comments for Justfile recipes.
+
+## v0.4.0 (discouraged)
+
+Notes:
+
+- the implementation of the Deque data structure is incomplete (not `rotate`) and inconsistent (`maxlen` and `__repr__`)/
 
 Added:
 
