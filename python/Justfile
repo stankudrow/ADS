@@ -1,29 +1,29 @@
-#[doc('list available rules')]
+# list the available rules
 default:
 	just --list
 
-#[doc('build the project')]
+# build the project
 build:
 	uv build
 
-#[doc('install the dependencies')]
+# install the lint/test dependencies
 sync:
 	uv sync --group lint --group test
 
-#[doc('check code')]
+# check the code
 check:
 	uv run ruff format --check
 	uv run ruff check
 	uv run mypy
 
-#[doc('format code')]
-format:
+# format the code
+fmt *files=".":
 	uv run ruff format
 
-#[doc('format and lint code')]
-lint: format
+# format and lint the code
+lint: fmt
 	uv run ruff check --fix .
 
-#[doc('run tests')]
-test:
-	uv run pytest
+# run the tests
+test *files=".":
+	uv run pytest {{files}}
