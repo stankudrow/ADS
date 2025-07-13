@@ -1,6 +1,6 @@
 [project]
 name = "adspy"
-version = "0.4.0"
+version = "0.4.1"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -77,9 +77,7 @@ addopts = [
     "--random-order"
 ]
 xfail_strict = true
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 
 [tool.ruff]
 indent-width = 4
