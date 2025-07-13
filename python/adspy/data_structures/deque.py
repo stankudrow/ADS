@@ -7,7 +7,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from adspy.data_structures.linked_lists import DoublyLinkedList
+from adspy.data_structures.lists import DoublyLinkedList
 
 
 # Python `deque` does not inherit from MutableSequence
@@ -26,14 +26,14 @@ class Deque:
         if maxlen and maxlen < 0:
             msg = f"maxen={maxlen} nust be non-negative"
             raise ValueError(msg)
-        self._maxlen = -1 if maxlen is None else maxlen
+        self._maxlen = maxlen
 
         self._lst = DoublyLinkedList()
         if it:
             self.extend(it)
 
     @property
-    def maxlen(self) -> int:
+    def maxlen(self) -> int | None:
         """Return the maxlen attribute value."""
         return self._maxlen
 
@@ -83,7 +83,7 @@ class Deque:
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
-        it = tuple(self)
+        it = list(self)
         return f"{cls_name}({it})"
 
     def __reversed__(self) -> Iterator:
@@ -94,7 +94,7 @@ class Deque:
 
     def append(self, value: Any, /) -> None:
         """Append the value."""
-        if not self.maxlen:
+        if self.maxlen == 0:
             return
         if len(self) == self.maxlen:
             self.popleft()
@@ -102,7 +102,7 @@ class Deque:
 
     def appendleft(self, value: Any, /) -> None:
         """Prepend the value."""
-        if not self.maxlen:
+        if self.maxlen == 0:
             return
         if len(self) == self.maxlen:
             self.pop()
@@ -156,7 +156,8 @@ class Deque:
         -------
         None
         """
-        if len(self) >= self.maxlen > -1:
+        m = self.maxlen
+        if isinstance(m, int) and len(self) >= m > -1:
             msg = "deque already at its maximum size"
             raise IndexError(msg)
         self._lst.insert(index, value)
@@ -177,7 +178,7 @@ class Deque:
         """Reverse in place."""
         self._lst.reverse()
 
-    def rotate(self, n: int = 1) -> None:
+    def rotate(self, n: int = 1, /) -> None:
         """Rotate `n` steps.
 
         If n is positive, rotate to the right.
@@ -192,6 +193,14 @@ class Deque:
         -------
         None
         """
+        if not (length := len(self)):
+            return
+        if not (n := n % length):
+            return
+        start, stop, step = 0, n, 1
+        for _ in range(start, stop, step):
+            item = self.pop()
+            self.appendleft(item)
 
 
 MutableSequence.register(Deque)

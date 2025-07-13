@@ -1,4 +1,4 @@
-from adspy.data_structures.linked_lists import DoublyLinkedList
-from adspy.data_structures.queues import Deque
+from adspy.data_structures.deque import Deque
+from adspy.data_structures.lists import DoublyLinkedList
 
 __all__ = ["Deque", "DoublyLinkedList"]
