@@ -546,7 +546,10 @@ class SinglyLinkedList(MutableSequence):
         -------
         None
         """
-        for node in self._yield_nodes():
+        for idx, node in enumerate(self._yield_nodes()):
+            if not idx and node.value == value:
+                self.popleft()
+                return
             if (next_node := node.next) and (next_node.value == value):
                 self._detach_next(node)
                 return
