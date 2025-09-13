@@ -180,7 +180,7 @@ def test_extendleft() -> None:
 
 
 def test_insert() -> None:
-    dlist: DoublyLinkedList[int] = DoublyLinkedList()
+    dlist = DoublyLinkedList()
     lst: list[int] = []
 
     dlist.insert(0, -1)
@@ -339,7 +339,7 @@ def test_delitem(
 
 def test_remove() -> None:
     it = [-1, 0, -1, 2, 0, 5, 5]
-    dlist: DoublyLinkedList[int] = DoublyLinkedList(it)
+    dlist = DoublyLinkedList(it)
 
     for item in it:
         it.remove(item)

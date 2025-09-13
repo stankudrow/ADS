@@ -180,7 +180,7 @@ def test_extendleft() -> None:
 
 
 def test_insert() -> None:
-    slist: SinglyLinkedList[int] = SinglyLinkedList()
+    slist = SinglyLinkedList()
     lst: list[int] = []
 
     slist.insert(0, -1)
@@ -339,7 +339,7 @@ def test_delitem(
 
 def test_remove() -> None:
     it = [-1, 0, -1, 2, 0, 5, 5]
-    slist: SinglyLinkedList[int] = SinglyLinkedList(it)
+    slist = SinglyLinkedList(it)
 
     for item in it:
         it.remove(item)
