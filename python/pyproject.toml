@@ -1,6 +1,6 @@
 [project]
 name = "adspy"
-version = "0.5.0"
+version = "0.6.0"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -147,7 +147,8 @@ fixable = [
 "tests/*.py" = [
     "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/
     "D",
-    "FBT001"  # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
+    "FBT001",  # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
+    "PT011",  # `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
 ]
 
 [tool.ruff.lint.pydocstyle]
