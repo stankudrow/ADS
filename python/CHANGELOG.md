@@ -1,5 +1,14 @@
 # Python Algorithms and Data Structures
 
+## v0.6.0
+
+Reconsider linked lists:
+
+- introduce the SinglyLinkedList
+- rework the DoublyLinkedList
+- lists are in a separated "lists" directory now -> import updated
+- tests revised
+
 ## v0.5.0
 
 Fixes the v0.4.0 with some breaking changes.
