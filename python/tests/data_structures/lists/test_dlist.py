@@ -341,7 +341,7 @@ def test_remove() -> None:
     it = [-1, 0, -1, 2, 0, 5, 5]
     dlist = DoublyLinkedList(it)
 
-    for item in set(it):
+    for item in it:
         it.remove(item)
         dlist.remove(item)
         assert it == dlist

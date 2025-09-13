@@ -341,7 +341,7 @@ def test_remove() -> None:
     it = [-1, 0, -1, 2, 0, 5, 5]
     slist = SinglyLinkedList(it)
 
-    for item in set(it):
+    for item in it:
         it.remove(item)
         slist.remove(item)
         assert it == slist
