@@ -6,7 +6,6 @@ from collections.abc import Callable, Iterable, Iterator, MutableSequence
 from functools import total_ordering
 from sys import maxsize as MAX_INT
 from typing import Any
-from itertools import zip_longest
 
 from typing_extensions import Self
 
