@@ -6,91 +6,91 @@ from typing import Any
 
 import pytest
 
-from adspy.data_structures.lists import SinglyLinkedList
+from adspy.data_structures.lists import DoublyLinkedList
 
 
 def test_append() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
-    slist.append(21)
-    assert len(slist) == 1
+    dlist.append(21)
+    assert len(dlist) == 1
 
-    slist.append(42)
-    assert len(slist) == 2
+    dlist.append(42)
+    assert len(dlist) == 2
 
-    assert slist[0] == 21
-    assert slist[1] == 42
+    assert dlist[0] == 21
+    assert dlist[1] == 42
 
 
 def test_prepend() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
-    slist.prepend(21)
-    assert len(slist) == 1
+    dlist.prepend(21)
+    assert len(dlist) == 1
 
-    slist.prepend(42)
-    assert len(slist) == 2
+    dlist.prepend(42)
+    assert len(dlist) == 2
 
-    assert slist[1] == 21
-    assert slist[0] == 42
+    assert dlist[1] == 21
+    assert dlist[0] == 42
 
 
 def test_prepend_and_append():
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
-    slist.prepend(1)
-    assert slist == [1]
+    dlist.prepend(1)
+    assert dlist == [1]
 
-    slist.append(-2)
-    assert slist == [1, -2]
+    dlist.append(-2)
+    assert dlist == [1, -2]
 
-    slist.prepend(3)
-    assert slist == [3, 1, -2]
+    dlist.prepend(3)
+    assert dlist == [3, 1, -2]
 
-    slist.append(-4)
-    assert slist == [3, 1, -2, -4]
+    dlist.append(-4)
+    assert dlist == [3, 1, -2, -4]
 
 
 def test_getitem() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
     with pytest.raises(IndexError):
-        slist[0]
+        dlist[0]
 
-    assert slist[::] == []
+    assert dlist[::] == []
 
     it = [1, 2, 3, 5, -3, 4]
-    slist = SinglyLinkedList(it)
+    dlist = DoublyLinkedList(it)
 
-    assert slist[0] == it[0]
-    assert slist[0:] == it[0:]
-    assert slist[:3] == it[:3]
-    assert slist[:10] == it[:10]
-    assert slist[1:7:2] == it[1:7:2]
-    assert slist[::1] == it[::1]
+    assert dlist[0] == it[0]
+    assert dlist[0:] == it[0:]
+    assert dlist[:3] == it[:3]
+    assert dlist[:10] == it[:10]
+    assert dlist[1:7:2] == it[1:7:2]
+    assert dlist[::1] == it[::1]
 
-    assert it[-1] == slist[-1]
+    assert it[-1] == dlist[-1]
     with pytest.raises(IndexError):
         it[-100]
     with pytest.raises(IndexError):
-        slist[-100]
+        dlist[-100]
 
-    assert slist[5:0:-1] == it[5:0:-1]
-    assert slist[-1:-6:-1] == it[-1:-6:-1]
-    assert slist[100:-100:-1] == it[100:-100:-1]
-    assert slist[-100:100:-1] == it[-100:100:-1]
-    assert slist[100:-100:1] == it[100:-100:1]
-    assert slist[-100:100:1] == it[-100:100:1]
+    assert dlist[5:0:-1] == it[5:0:-1]
+    assert dlist[-1:-6:-1] == it[-1:-6:-1]
+    assert dlist[100:-100:-1] == it[100:-100:-1]
+    assert dlist[-100:100:-1] == it[-100:100:-1]
+    assert dlist[100:-100:1] == it[100:-100:1]
+    assert dlist[-100:100:1] == it[-100:100:1]
 
     with pytest.raises(ValueError):
         it[::0]
     with pytest.raises(ValueError):
-        slist[::0]
+        dlist[::0]
 
-    assert slist[-50:2:3] == it[-50:2:3]
-    assert slist[0:50:2] == it[0:50:2]
+    assert dlist[-50:2:3] == it[-50:2:3]
+    assert dlist[0:50:2] == it[0:50:2]
 
-    assert slist[::] == it
+    assert dlist[::] == it
 
 
 @pytest.mark.parametrize(
@@ -102,44 +102,44 @@ def test_getitem() -> None:
     ],
 )
 def test_extend(it: Iterable, extendee: Iterable) -> None:
-    slist = SinglyLinkedList(it)
-    slist.extend(extendee)
+    dlist = DoublyLinkedList(it)
+    dlist.extend(extendee)
 
-    assert slist == (it + extendee)
+    assert dlist == (it + extendee)
 
 
 def test_clear() -> None:
-    slist = SinglyLinkedList([1, 4, 5])
+    dlist = DoublyLinkedList([1, 4, 5])
 
     for _ in range(2):
-        slist.clear()
-        assert slist == []
-        assert len(slist) == 0
-        assert bool(slist) is False
+        dlist.clear()
+        assert dlist == []
+        assert len(dlist) == 0
+        assert bool(dlist) is False
 
 
 def test_addition() -> None:
-    slist = SinglyLinkedList([1, 3])
+    dlist = DoublyLinkedList([1, 3])
 
     addendum = [2, 4]
     answer = [1, 3] + addendum
 
-    assert slist + addendum == answer
+    assert dlist + addendum == answer
 
-    slist += addendum
-    assert slist == answer
+    dlist += addendum
+    assert dlist == answer
 
-    assert slist + [] == answer
+    assert dlist + [] == answer
 
 
 def test_multiplication() -> None:
     it = [-1, 0, 1]
-    slist = SinglyLinkedList(it)
+    dlist = DoublyLinkedList(it)
 
-    assert slist * 0 == []
-    assert slist * 1 == slist
-    assert slist * 2 == it * 2
-    assert slist * -1 == it * -1
+    assert dlist * 0 == []
+    assert dlist * 1 == dlist
+    assert dlist * 2 == it * 2
+    assert dlist * -1 == it * -1
 
 
 @pytest.mark.parametrize(
@@ -152,51 +152,51 @@ def test_multiplication() -> None:
 )
 def test_count(it: Iterable, val: Any) -> None:
     lst = list(it)
-    slist = SinglyLinkedList(lst)
+    dlist = DoublyLinkedList(lst)
 
-    assert lst.count(val) == slist.count(val)
+    assert lst.count(val) == dlist.count(val)
 
 
 def test_extendleft() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
     addendum = [1, 2, 3]
-    slist.extendleft(addendum)
+    dlist.extendleft(addendum)
 
-    assert slist == addendum
+    assert dlist == addendum
 
     rev = list(reversed(addendum))
-    slist.extendleft(rev)
+    dlist.extendleft(rev)
 
-    assert slist == rev + addendum
+    assert dlist == rev + addendum
 
 
 def test_insert() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
     lst = []
 
-    slist.insert(0, -1)
+    dlist.insert(0, -1)
     lst.insert(0, -1)
-    assert slist == lst
+    assert dlist == lst
 
-    slist.insert(-1, 1)
+    dlist.insert(-1, 1)
     lst.insert(-1, 1)
-    assert slist == lst
+    assert dlist == lst
 
-    size = len(slist)
-    slist.insert(size, 1)
+    size = len(dlist)
+    dlist.insert(size, 1)
     lst.insert(size, 1)
-    assert slist == lst
+    assert dlist == lst
 
-    idx = 0 - len(slist)
-    slist.insert(idx, 1)
+    idx = 0 - len(dlist)
+    dlist.insert(idx, 1)
     lst.insert(idx, 1)
-    assert slist == lst
+    assert dlist == lst
 
     for _ in range(10):
-        idx = randrange(0, len(slist))
+        idx = randrange(0, len(dlist))
         value = randint(-100, 100)
-        slist.insert(idx, value)
+        dlist.insert(idx, value)
         lst.insert(idx, value)
 
 
@@ -228,7 +228,7 @@ def test_setitem(
     value: Any,
     expectation: AbstractContextManager,
 ) -> None:
-    lst = SinglyLinkedList(it)
+    lst = DoublyLinkedList(it)
 
     with expectation:
         it[key] = value
@@ -242,30 +242,30 @@ def test_setitem(
 
 
 def test_index() -> None:
-    slist = SinglyLinkedList()
+    dlist = DoublyLinkedList()
 
     with pytest.raises(ValueError):
-        slist.index(0)
+        dlist.index(0)
 
     with pytest.raises(ValueError):
-        slist.index(0, start=10)
+        dlist.index(0, start=10)
 
     with pytest.raises(ValueError):
-        slist.index(0, start=0, stop=-1)
+        dlist.index(0, start=0, stop=-1)
 
-    slist.insert(0, 42)
-    assert slist.index(42) == 0
+    dlist.insert(0, 42)
+    assert dlist.index(42) == 0
 
-    slist.insert(-1, 21)
-    assert slist.index(42) == 1
+    dlist.insert(-1, 21)
+    assert dlist.index(42) == 1
 
-    assert slist.index(21, start=0) == 0
+    assert dlist.index(21, start=0) == 0
     with pytest.raises(ValueError):
-        slist.index(21, start=1)
+        dlist.index(21, start=1)
 
-    assert slist.index(42, start=0, stop=10) == 1
+    assert dlist.index(42, start=0, stop=10) == 1
     with pytest.raises(ValueError):
-        slist.index(42, stop=1)
+        dlist.index(42, stop=1)
 
 
 @pytest.mark.parametrize(
@@ -290,7 +290,7 @@ def test_delitem(
     key: int | slice,
     expectation: AbstractContextManager,
 ) -> None:
-    lst = SinglyLinkedList(it)
+    lst = DoublyLinkedList(it)
 
     with expectation:
         del it[key]
@@ -303,78 +303,78 @@ def test_delitem(
 
 def test_remove() -> None:
     it = [-1, 0, -1, 2, 0, 5, 5]
-    slist = SinglyLinkedList(it)
+    dlist = DoublyLinkedList(it)
 
     for item in set(it):
         it.remove(item)
-        slist.remove(item)
-        assert it == slist
+        dlist.remove(item)
+        assert it == dlist
 
     with pytest.raises(ValueError):
         it.remove(-100)
     with pytest.raises(ValueError):
-        slist.remove(-100)
+        dlist.remove(-100)
 
 
 def test_popleft() -> None:
     lst = [-1, 6, 3, 4, 4, 2]
-    slist = SinglyLinkedList(lst)
+    dlist = DoublyLinkedList(lst)
 
     while lst:
         lst_item = lst.pop(0)
-        slist_item = slist.popleft()
+        dlist_item = dlist.popleft()
 
-        assert lst_item == slist_item
-        assert len(lst) == len(slist)
+        assert lst_item == dlist_item
+        assert len(lst) == len(dlist)
 
     with pytest.raises(IndexError):
-        slist.popleft()
+        dlist.popleft()
 
 
 def test_popright() -> None:
     lst = [-1, 6, 3, 4, 4, 2]
-    slist = SinglyLinkedList(lst)
+    dlist = DoublyLinkedList(lst)
 
     while lst:
         lst_item = lst.pop(-1)
-        slist_item = slist.popright()
+        dlist_item = dlist.popright()
 
-        assert lst_item == slist_item
-        assert len(lst) == len(slist)
+        assert lst_item == dlist_item
+        assert len(lst) == len(dlist)
 
     with pytest.raises(IndexError):
-        slist.popright()
+        dlist.popright()
 
 
 def test_pop() -> None:
     lst = [-1, 6, 3, 4, 4, 2, -1, 0, 6, 5, 2]
-    slist = SinglyLinkedList(lst)
+    dlist = DoublyLinkedList(lst)
 
-    assert slist.pop(0) == lst.pop(0)
-    assert slist.pop() == lst.pop()
-    assert slist == lst
+    assert dlist.pop(0) == lst.pop(0)
+    assert dlist.pop() == lst.pop()
+    assert dlist == lst
 
     while lst:
         idx = randrange(0, len(lst))
-        assert slist.pop(idx) == lst.pop(idx)
-        assert slist == lst
+        assert dlist.pop(idx) == lst.pop(idx)
+        assert dlist == lst
 
-    assert not slist
+    assert not dlist
 
     with pytest.raises(IndexError):
-        slist.pop(100)
+        dlist.pop(100)
 
 
 def test_reverse() -> None:
     it = [-1, -2, 0, 1, 3]
-    slist = SinglyLinkedList(it)
+    dlist = DoublyLinkedList(it)
     rev = tuple(reversed(it))
 
-    assert tuple(reversed(slist)) == rev
-    assert slist == it
+    assert tuple(reversed(dlist)) == rev
+    assert dlist == it
 
-    slist.reverse()
-    assert slist == rev
+    dlist.reverse()
+    assert dlist == rev
 
 
 @pytest.mark.parametrize(
@@ -393,19 +393,19 @@ def test_sort(it: Iterable, key: None | Callable, reverse: bool) -> None:
     tup = tuple(it)
     sit = sorted(tup, key=key, reverse=reverse)
 
-    slist = SinglyLinkedList(it)
-    assert sorted(slist, key=key, reverse=reverse) == sit
-    assert slist == tup
+    dlist = DoublyLinkedList(it)
+    assert sorted(dlist, key=key, reverse=reverse) == sit
+    assert dlist == tup
 
-    slist = SinglyLinkedList(it)
-    slist.sort(key=key, reverse=reverse)
-    assert slist == sit
+    dlist = DoublyLinkedList(it)
+    dlist.sort(key=key, reverse=reverse)
+    assert dlist == sit
 
 
 def test_contains() -> None:
-    slist = SinglyLinkedList([1, 0, 1, -2, 0])
+    dlist = DoublyLinkedList([1, 0, 1, -2, 0])
 
-    assert 0 in slist
-    assert -2 in slist
-    assert -3 not in slist
-    assert [0, 1] not in slist
+    assert 0 in dlist
+    assert -2 in dlist
+    assert -3 not in dlist
+    assert [0, 1] not in dlist

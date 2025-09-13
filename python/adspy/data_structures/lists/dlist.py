@@ -1,4 +1,4 @@
-"""Singly linked list data structure."""
+"""Doubly linked list data structure."""
 
 from array import array
 from collections import OrderedDict
@@ -12,14 +12,15 @@ from typing_extensions import Self
 from adspy.algorithms.sorting import merge_sort
 
 
-class _SinglyLinkedNode:
-    """Singly linked node."""
+class _DoublyLinkedNode:
+    """Doubly linked node."""
 
-    __slots__ = ("value", "_next")
+    __slots__ = ("value", "_prev", "_next")
 
     def __init__(self, value: Any = None, /) -> None:
         self.value = value
-        self._next: _SinglyLinkedNode | None = None
+        self._prev: _DoublyLinkedNode | None = None
+        self._next: _DoublyLinkedNode | None = None
 
     def __eq__(self, value: object) -> bool:
         return bool(self.value == value)
@@ -29,21 +30,30 @@ class _SinglyLinkedNode:
         return f"{cls_name}({self.value!r})"
 
     @property
-    def next(self) -> "_SinglyLinkedNode | None":
+    def prev(self) -> "_DoublyLinkedNode | None":
+        return self._prev
+
+    @prev.setter
+    def prev(self, node: "_DoublyLinkedNode | None", /) -> None:
+        self._prev = node if isinstance(node, _DoublyLinkedNode) else None
+
+    @property
+    def next(self) -> "_DoublyLinkedNode | None":
         return self._next
 
     @next.setter
-    def next(self, node: "_SinglyLinkedNode | None", /) -> None:
-        self._next = node if isinstance(node, _SinglyLinkedNode) else None
+    def next(self, node: "_DoublyLinkedNode | None", /) -> None:
+        self._next = node if isinstance(node, _DoublyLinkedNode) else None
 
 
 # Node utils
 
 
-def _delete_node(node: None | _SinglyLinkedNode) -> Any:
+def _delete_node(node: None | _DoublyLinkedNode) -> Any:
     if not node:
         return None
     value = node.value
+    node.prev = None
     node.next = None
     del node
     return value
@@ -52,22 +62,19 @@ def _delete_node(node: None | _SinglyLinkedNode) -> Any:
 # Linked lists
 
 
-class SinglyLinkedListError(Exception):
-    """Generic Singly Linked List Error."""
+class DoublyLinkedListError(Exception):
+    """Generic Doubly Linked List Error."""
 
 
 @total_ordering
-class SinglyLinkedList(MutableSequence):
-    """Singly Linked List."""
+class DoublyLinkedList(MutableSequence):
+    """Doubly Linked List."""
 
-    __slots__ = ("_head", "_length")
+    __slots__ = ("_head", "_tail", "_length")
 
     def __init__(self, it: None | Iterable = None, /) -> None:
-        self._head: _SinglyLinkedNode | None = None
-        # If you see the implementation,
-        # you may understand why self._tail is pointless,
-        # yet it is useful for DoublyLinkedList(s)
-        # self._tail: _SinglyLinkedNode | None = None  # noqa: ERA001
+        self._head: _DoublyLinkedNode | None = None
+        self._tail: _DoublyLinkedNode | None = None
         self._length: int = 0
 
         # Well, it's kinda unfair to use Python lists here :)
@@ -195,30 +202,27 @@ class SinglyLinkedList(MutableSequence):
         self.clear()
         self.extend(new_list)
 
-    @property
-    def _pretail(self) -> None | _SinglyLinkedNode:
-        pretail_node: None | _SinglyLinkedNode = None
-        for node in self._yield_nodes():
-            if node.next:
-                pretail_node = node
-        return pretail_node
-
-    @property
-    def _tail(self) -> None | _SinglyLinkedNode:
-        if pretail := self._pretail:
-            return pretail.next
-        return self._head
-
-    def _detach_next(self, node: None | _SinglyLinkedNode) -> Any:
+    def _detach(self, node: None | _DoublyLinkedNode) -> Any:
         if not node:
             return None
-        node_to_detach = node.next
-        next_node_to_link = None
-        if node_to_detach:
-            next_node_to_link = node_to_detach.next
-        node.next = next_node_to_link
+        prev_node = node.prev
+        next_node = node.next
+
+        # The next_node can be a Node or None -> does not matter
+        # because self._head or prev_node.next can point at a Node or None
+        if prev_node:
+            prev_node.next = next_node
+        else:
+            self._head = next_node
+
+        if next_node:
+            # linking backwards
+            next_node.prev = prev_node if next_node else None
+        else:
+            self._tail = prev_node
+
         self._length -= 1
-        return _delete_node(node_to_detach)
+        return _delete_node(node)
 
     def _get_empty_list(self) -> Self:
         return type(self)()
@@ -261,7 +265,7 @@ class SinglyLinkedList(MutableSequence):
             raise IndexError(msg)
         return nidx
 
-    def _yield_nodes(self) -> Iterator[_SinglyLinkedNode]:
+    def _yield_nodes(self) -> Iterator[_DoublyLinkedNode]:
         """Yield list nodes sequentially.
 
         Yields
@@ -284,11 +288,13 @@ class SinglyLinkedList(MutableSequence):
         -------
         None
         """
-        node = _SinglyLinkedNode(value)
+        node = _DoublyLinkedNode(value)
         if tail := self._tail:
             tail.next = node
+            node.prev = tail
+            self._tail = node
         else:
-            self._head = node
+            self._head = self._tail = node
         self._length += 1
 
     def clear(self) -> None:
@@ -434,13 +440,16 @@ class SinglyLinkedList(MutableSequence):
 
         node_iterator = self._yield_nodes()
         prev_node = next(node_iterator)  # == self._head
-        new_node = _SinglyLinkedNode(value)
+        new_node = _DoublyLinkedNode(value)
         for idx, node in enumerate(node_iterator, 1):
             if idx == nidx:
                 prev_node.next = new_node
+                new_node.prev = prev_node
                 new_node.next = node
+                node.prev = new_node
                 self._length += 1
                 break
+            prev_node = node
 
     def pop(self, index: int = -1, /) -> Any:
         """Return with removal the value at the index.
@@ -465,11 +474,11 @@ class SinglyLinkedList(MutableSequence):
             return self.popleft()
         normal_idx = self._normalise_index(index)
         for idx, node in enumerate(self._yield_nodes()):
-            if (next_idx := idx + 1) == normal_idx:
-                value = node.next.value
-                self._detach_next(node)
+            if idx == normal_idx:
+                value = node.value
+                self._detach(node)
                 return value
-            if next_idx > normal_idx:
+            if idx > normal_idx:
                 break
         msg = f"bad index={index}"
         raise IndexError(msg)
@@ -488,9 +497,7 @@ class SinglyLinkedList(MutableSequence):
             the first/head item of the list
         """
         if old_head := self._head:
-            self._head = old_head.next
-            self._length -= 1
-            return _delete_node(old_head)
+            return self._detach(old_head)
         msg = "cannot pop from an empty list"
         raise IndexError(msg)
 
@@ -507,8 +514,8 @@ class SinglyLinkedList(MutableSequence):
         Any
             the last/tail item of the list
         """
-        if pretail := self._pretail:
-            return self._detach_next(pretail)
+        if old_tail := self._tail:
+            return self._detach(old_tail)
         return self.popleft()
 
     def prepend(self, value: Any, /) -> None:
@@ -522,8 +529,12 @@ class SinglyLinkedList(MutableSequence):
         -------
         None
         """
-        node = _SinglyLinkedNode(value)
+        node = _DoublyLinkedNode(value)
         node.next = self._head
+        if self._head:
+            self._head.prev = node
+        else:
+            self._tail = node
         self._head = node
         self._length += 1
 
@@ -544,8 +555,8 @@ class SinglyLinkedList(MutableSequence):
         None
         """
         for node in self._yield_nodes():
-            if (next_node := node.next) and (next_node.value == value):
-                self._detach_next(node)
+            if node.value == value:
+                self._detach(node)
                 return
         msg = f"{value!r} is not in the list"
         raise ValueError(msg)
