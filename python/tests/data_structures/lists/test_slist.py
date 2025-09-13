@@ -44,11 +44,18 @@ def test_prepend_and_append():
     slist.append(-2)
     assert slist == [1, -2]
 
-    slist.prepend(3)
-    assert slist == [3, 1, -2]
+    slist.append(3)
+    assert slist == [1, -2, 3]
 
-    slist.append(-4)
-    assert slist == [3, 1, -2, -4]
+    slist.prepend(4)
+    assert slist == [4, 1, -2, 3]
+
+    slist.append(-5)
+    assert slist == [4, 1, -2, 3, -5]
+
+    slist.prepend(6)
+    assert slist == [6, 4, 1, -2, 3, -5]
+    assert len(slist) == 6
 
 
 def test_getitem() -> None:
@@ -98,7 +105,8 @@ def test_getitem() -> None:
     [
         ([], []),
         ([], [1]),
-        ([2], [3, 4]),
+        ([2], []),
+        ([3], [4, 5]),
     ],
 )
 def test_extend(it: Iterable, extendee: Iterable) -> None:
@@ -109,7 +117,7 @@ def test_extend(it: Iterable, extendee: Iterable) -> None:
 
 
 def test_clear() -> None:
-    slist = SinglyLinkedList([1, 4, 5])
+    slist = SinglyLinkedList([1, 4, 1, 0, 1, 5])
 
     for _ in range(2):
         slist.clear()
@@ -188,9 +196,34 @@ def test_insert() -> None:
     lst.insert(size, 1)
     assert slist == lst
 
+    size = len(slist) + 3
+    slist.insert(size, 1)
+    lst.insert(size, 1)
+    assert slist == lst
+
     idx = 0 - len(slist)
     slist.insert(idx, 1)
     lst.insert(idx, 1)
+    assert slist == lst
+
+    idx = len(slist) // 2
+    slist.insert(idx, 50)
+    lst.insert(idx, 50)
+    assert slist == lst
+
+    idx = -(len(slist) // 2)
+    slist.insert(idx, 80)
+    lst.insert(idx, 80)
+    assert slist == lst
+
+    idx = len(slist) - 1
+    slist.insert(idx, 90)
+    lst.insert(idx, 90)
+    assert slist == lst
+
+    idx = len(slist) - 2
+    slist.insert(idx, -100)
+    lst.insert(idx, -100)
     assert slist == lst
 
     for _ in range(10):

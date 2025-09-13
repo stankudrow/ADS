@@ -441,6 +441,7 @@ class SinglyLinkedList(MutableSequence):
                 new_node.next = node
                 self._length += 1
                 break
+            prev_node = node
 
     def pop(self, index: int = -1, /) -> Any:
         """Return with removal the value at the index.
