@@ -354,7 +354,7 @@ class SinglyLinkedList(MutableSequence):
         -------
         None
         """
-        for item in reversed(it):
+        for item in reversed(tuple(it)):
             self.prepend(item)
 
     def index(self, value: Any, start: int = 0, stop: int = MAX_INT) -> int:
@@ -423,11 +423,11 @@ class SinglyLinkedList(MutableSequence):
         None
         """
         nidx = self._normalise_index(index)
-        if not nidx:
+        if nidx < 1:
             # will increment the self._length
             self.prepend(value)
             return
-        if nidx < 0 or nidx >= len(self):
+        if nidx >= len(self):
             # will increment the self._length
             self.append(value)
             return
@@ -467,7 +467,9 @@ class SinglyLinkedList(MutableSequence):
         normal_idx = self._normalise_index(index)
         for idx, node in enumerate(self._yield_nodes()):
             if (next_idx := idx + 1) == normal_idx:
-                value = node.next.value
+                if not (next_node := node.next):
+                    break
+                value = next_node.value
                 self._detach_next(node)
                 return value
             if next_idx > normal_idx:

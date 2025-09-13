@@ -44,11 +44,18 @@ def test_prepend_and_append():
     dlist.append(-2)
     assert dlist == [1, -2]
 
-    dlist.prepend(3)
-    assert dlist == [3, 1, -2]
+    dlist.append(3)
+    assert dlist == [1, -2, 3]
 
-    dlist.append(-4)
-    assert dlist == [3, 1, -2, -4]
+    dlist.prepend(4)
+    assert dlist == [4, 1, -2, 3]
+
+    dlist.append(-5)
+    assert dlist == [4, 1, -2, 3, -5]
+
+    dlist.prepend(6)
+    assert dlist == [6, 4, 1, -2, 3, -5]
+    assert len(dlist) == 6
 
 
 def test_getitem() -> None:
@@ -98,10 +105,11 @@ def test_getitem() -> None:
     [
         ([], []),
         ([], [1]),
-        ([2], [3, 4]),
+        ([2], []),
+        ([3], [4, 5]),
     ],
 )
-def test_extend(it: Iterable, extendee: Iterable) -> None:
+def test_extend(it: list[int], extendee: list[int]) -> None:
     dlist = DoublyLinkedList(it)
     dlist.extend(extendee)
 
@@ -109,7 +117,7 @@ def test_extend(it: Iterable, extendee: Iterable) -> None:
 
 
 def test_clear() -> None:
-    dlist = DoublyLinkedList([1, 4, 5])
+    dlist = DoublyLinkedList([1, 4, 1, 0, 5])
 
     for _ in range(2):
         dlist.clear()
@@ -173,7 +181,7 @@ def test_extendleft() -> None:
 
 def test_insert() -> None:
     dlist = DoublyLinkedList()
-    lst = []
+    lst: list[int] = []
 
     dlist.insert(0, -1)
     lst.insert(0, -1)
@@ -188,9 +196,39 @@ def test_insert() -> None:
     lst.insert(size, 1)
     assert dlist == lst
 
+    size = len(dlist) + 3
+    dlist.insert(size, 1)
+    lst.insert(size, 1)
+    assert dlist == lst
+
     idx = 0 - len(dlist)
     dlist.insert(idx, 1)
     lst.insert(idx, 1)
+    assert dlist == lst
+
+    idx = len(dlist) // 2
+    dlist.insert(idx, 50)
+    lst.insert(idx, 50)
+    assert dlist == lst
+
+    idx = -(len(dlist) // 2)
+    dlist.insert(idx, 80)
+    lst.insert(idx, 80)
+    assert dlist == lst
+
+    idx = len(dlist) - 1
+    dlist.insert(idx, 90)
+    lst.insert(idx, 90)
+    assert dlist == lst
+
+    idx = len(dlist) - 2
+    dlist.insert(idx, -100)
+    lst.insert(idx, -100)
+    assert dlist == lst
+
+    idx = -100
+    dlist.insert(idx, 321)
+    lst.insert(idx, 321)
     assert dlist == lst
 
     for _ in range(10):
@@ -234,8 +272,6 @@ def test_setitem(
         it[key] = value
 
     with expectation:
-        # import ipdb
-        # ipdb.set_trace()
         lst[key] = value
 
     assert lst == it

@@ -360,7 +360,7 @@ class DoublyLinkedList(MutableSequence):
         -------
         None
         """
-        for item in reversed(it):
+        for item in reversed(tuple(it)):
             self.prepend(item)
 
     def index(self, value: Any, start: int = 0, stop: int = MAX_INT) -> int:
@@ -429,11 +429,11 @@ class DoublyLinkedList(MutableSequence):
         None
         """
         nidx = self._normalise_index(index)
-        if not nidx:
+        if nidx < 1:
             # will increment the self._length
             self.prepend(value)
             return
-        if nidx < 0 or nidx >= len(self):
+        if nidx >= len(self):
             # will increment the self._length
             self.append(value)
             return

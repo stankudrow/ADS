@@ -109,7 +109,7 @@ def test_getitem() -> None:
         ([3], [4, 5]),
     ],
 )
-def test_extend(it: Iterable, extendee: Iterable) -> None:
+def test_extend(it: list[int], extendee: list[int]) -> None:
     slist = SinglyLinkedList(it)
     slist.extend(extendee)
 
@@ -181,7 +181,7 @@ def test_extendleft() -> None:
 
 def test_insert() -> None:
     slist = SinglyLinkedList()
-    lst = []
+    lst: list[int] = []
 
     slist.insert(0, -1)
     lst.insert(0, -1)
@@ -226,6 +226,11 @@ def test_insert() -> None:
     lst.insert(idx, -100)
     assert slist == lst
 
+    idx = -100
+    slist.insert(idx, 321)
+    lst.insert(idx, 321)
+    assert slist == lst
+
     for _ in range(10):
         idx = randrange(0, len(slist))
         value = randint(-100, 100)
@@ -267,8 +272,6 @@ def test_setitem(
         it[key] = value
 
     with expectation:
-        # import ipdb
-        # ipdb.set_trace()
         lst[key] = value
 
     assert lst == it
