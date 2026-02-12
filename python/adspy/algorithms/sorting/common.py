@@ -1,4 +1,4 @@
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from operator import ge, gt, le, lt
 from typing import Any, cast
 
@@ -9,7 +9,7 @@ def _default_key(arg: Any) -> Any:
 
 def validate_key_arg(key: Any) -> Callable:
     if key is None:
-        key = _default_key
+        return _default_key
     if callable(key):
         return cast("Callable", key)
     msg = f"{key} is not callable"
@@ -17,7 +17,7 @@ def validate_key_arg(key: Any) -> Callable:
 
 
 def is_sorted(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -27,6 +27,8 @@ def is_sorted(
 
     Parameters
     ----------
+    it: Iterable
+    key : None | Callable, default None
     reverse : bool, default False
         True for the ascending order (equal items are acceptable)
     strict: bool, default False
@@ -48,7 +50,7 @@ def is_sorted(
         if strict:
             op = lt
 
-    tup = tuple(seq)
+    tup = tuple(it)
     for idx in range(1, len(tup)):
         if not op(key(tup[idx - 1]), key(tup[idx])):
             return False

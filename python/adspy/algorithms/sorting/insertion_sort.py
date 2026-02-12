@@ -5,14 +5,14 @@ References:
 - https://en.wikipedia.org/wiki/Insertion_sort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 from operator import gt, lt
 
 from adspy.algorithms.sorting.common import validate_key_arg
 
 
 def insertion_sort(
-    seq: Sequence,
+    it: Iterable,
     key: Callable | None = None,
     *,
     reverse: bool = False,
@@ -21,7 +21,7 @@ def insertion_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it: Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -29,18 +29,17 @@ def insertion_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
 
-    lst = list(seq)
-    if (size := len(lst)) < 2:
-        return lst
+    seq = list(it)
+    size = len(seq)  # O(1)
     op = lt if reverse else gt
-    for idx in range(1, size):
-        curr = lst[idx]
-        jdx = idx - 1
-        while jdx > -1 and op(key(lst[jdx]), key(lst[jdx + 1])):
-            lst[jdx + 1], lst[jdx] = lst[jdx], lst[jdx + 1]
-            jdx -= 1
-        lst[jdx + 1] = curr
-    return lst
+
+    for i in range(1, size):
+        current = seq[i]
+        j = i - 1
+        while j > -1 and op(key(seq[j]), key(current)):
+            seq[j + 1] = seq[j]
+            j -= 1
+        seq[j + 1] = current
+    return seq
