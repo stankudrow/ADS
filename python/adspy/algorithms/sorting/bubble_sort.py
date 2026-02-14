@@ -21,7 +21,7 @@ def bubble_sort(
 
     Parameters
     ----------
-    seq : Iterable
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
