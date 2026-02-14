@@ -8,7 +8,6 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.common import is_sorted
 from adspy.algorithms.sorting.merge_sort import merge_sort
 
 
@@ -72,11 +71,8 @@ def test_merge_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
     lst = list(seq)
-
-    result = merge_sort(lst, key=key)
-
-    assert is_sorted(result, key=key)
     with expectation:
+        result = merge_sort(lst, key=key)
         expected = sorted(lst, key=key)
         assert result == expected
 
@@ -85,5 +81,5 @@ def test_merge_sort_purity():
     sample = random.sample(range(1, 100, 2), 15)
     sample_dup = sample.copy()
 
-    assert merge_sort(seq=sample) == sorted(sample)
+    assert merge_sort(sample) == sorted(sample)
     assert sample == sample_dup

@@ -5,7 +5,7 @@ References:
 - https://en.wikipedia.org/wiki/Merge_sort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 
 from adspy.algorithms.sorting.common import merge, validate_key_arg
 
@@ -27,7 +27,7 @@ def _merge_sort(
 
 
 def merge_sort(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -36,7 +36,7 @@ def merge_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -44,10 +44,5 @@ def merge_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
-
-    lst = list(seq)
-    if len(lst) > 1:
-        lst = _merge_sort(lst, key=key, reverse=reverse)
-    return lst
+    return _merge_sort(list(it), key=key, reverse=reverse)
