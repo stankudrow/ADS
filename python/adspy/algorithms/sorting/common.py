@@ -1,65 +1,20 @@
-from collections.abc import Callable, Iterable, Sequence
-from operator import ge, gt, le, lt
+from collections.abc import Callable, Iterable
+from operator import gt, lt
 from typing import Any, cast
-
-
-def _default_key(arg: Any) -> Any:
-    return arg
 
 
 def validate_key_arg(key: Any) -> Callable:
     if key is None:
-        return _default_key
+        return lambda x: x
     if callable(key):
         return cast("Callable", key)
     msg = f"{key} is not callable"
     raise TypeError(msg)
 
 
-def is_sorted(
-    it: Iterable,
-    key: None | Callable = None,
-    *,
-    reverse: bool = False,
-    strict: bool = False,
-) -> bool:
-    """Returns True if the `seq` is sorted.
-
-    Parameters
-    ----------
-    it: Iterable
-    key : None | Callable, default None
-    reverse : bool, default False
-        True for the ascending order (equal items are acceptable)
-    strict: bool, default False
-        if True, then checking the strict order (no equality is allowed)
-
-    Returns
-    -------
-    bool
-    """
-
-    key = validate_key_arg(key)
-
-    if reverse:
-        op = ge
-        if strict:
-            op = gt
-    else:
-        op = le
-        if strict:
-            op = lt
-
-    tup = tuple(it)
-    for idx in range(1, len(tup)):
-        if not op(key(tup[idx - 1]), key(tup[idx])):
-            return False
-    return True
-
-
 def merge(
-    seq1: Sequence,
-    seq2: Sequence,
+    it1: Iterable,
+    it2: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -68,8 +23,8 @@ def merge(
 
     Parameters
     ----------
-    seq1 : Sequence
-    seq2 : Sequence
+    it1 : Iterable
+    it2 : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -77,22 +32,20 @@ def merge(
     -------
     list
     """
-
     key = validate_key_arg(key)
-
     op = gt if reverse else lt
 
     merged = []
-    lst1, lst2 = map(list, (seq1, seq2))
-    len1, len2 = map(len, (lst1, lst2))
-    idx1, idx2 = 0, 0
-    while (idx1 < len1) and (idx2 < len2):
-        if op(key(seq1[idx1]), key(seq2[idx2])):
-            merged.append(seq1[idx1])
-            idx1 += 1
+    seq1, seq2 = map(list, (it1, it2))
+    i, j = 0, 0
+    while i < len(seq1) and j < len(seq2):
+        if op(key(item1 := seq1[i]), key(item2 := seq2[j])):
+            merged.append(item1)
+            i += 1
         else:
-            merged.append(seq2[idx2])
-            idx2 += 1
-    merged += seq1[idx1:]
-    merged += seq2[idx2:]
+            merged.append(item2)
+            j += 1
+    # seq1 or seq2 (or both) is (are) empty
+    merged += seq1[i:]
+    merged += seq2[j:]
     return merged
