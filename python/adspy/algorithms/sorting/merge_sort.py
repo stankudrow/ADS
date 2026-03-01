@@ -17,7 +17,6 @@ def _merge_sort(
     reverse: bool = False,
 ) -> list:
     """The actual recursive implementation."""
-
     if (size := len(lst)) < 2:
         return lst
     mid = size // 2

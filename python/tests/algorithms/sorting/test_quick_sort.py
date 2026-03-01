@@ -8,7 +8,6 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.common import is_sorted
 from adspy.algorithms.sorting.quick_sort import quick_sort
 
 
@@ -73,11 +72,8 @@ def test_quick_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
 ):
     lst = list(seq)
-
-    result = quick_sort(lst, key=key)
-
-    assert is_sorted(result, key=key)
     with expectation:
+        result = quick_sort(lst, key=key)
         expected = sorted(lst, key=key)
         assert result == expected
 
@@ -86,5 +82,5 @@ def test_quick_sort_purity():
     sample = random.sample(range(1, 100, 2), 15)
     sample_dup = sample.copy()
 
-    assert quick_sort(seq=sample) == sorted(sample)
+    assert quick_sort(sample) == sorted(sample)
     assert sample == sample_dup

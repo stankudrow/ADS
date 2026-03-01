@@ -5,7 +5,7 @@ References:
 - https://en.wikipedia.org/wiki/Quicksort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 from operator import gt, lt
 from random import randint
 from typing import Any
@@ -25,44 +25,37 @@ def _compare(
 
 def _quick_sort(
     lst: list,
-    left: int,
-    right: int,
+    lidx: int,
+    ridx: int,
     *,
     key: Callable,
     cmp: Callable,
 ) -> None:
     """The actual recursive implementation."""
-
     # special minor cases
-    if left >= right:
+    if lidx >= ridx:
         return
-    if (right - left) == 1:
-        if not _compare(lst[left], lst[right], key=key, cmp=cmp):
-            lst[left], lst[right] = lst[right], lst[left]
-        return
-
+    if (ridx - lidx) == 1:
+        if not _compare(lst[lidx], lst[ridx], key=key, cmp=cmp):
+            lst[lidx], lst[ridx] = lst[ridx], lst[lidx]
+        return  # in order
     # picking a pivot
-    pidx = randint(left, right)
-    pivot = lst[pidx]
+    pivot = lst[randint(lidx, ridx)]
     # partitioning
-    lefter, righter = left, right
-    while lefter < righter:
-        while (lefter < righter) and _compare(
-            lst[lefter], pivot, key=key, cmp=cmp
-        ):
-            lefter += 1
-        while (lefter < righter) and (
-            not _compare(lst[righter], pivot, key=key, cmp=cmp)
-        ):
-            righter -= 1
-        if lefter != righter:
-            lst[lefter], lst[righter] = lst[righter], lst[lefter]
-    _quick_sort(lst, left, righter - 1, key=key, cmp=cmp)
-    _quick_sort(lst, righter, right, key=key, cmp=cmp)
+    li, ri = lidx, ridx
+    while li < ri:
+        while (li < ri) and _compare(lst[li], pivot, key=key, cmp=cmp):
+            li += 1  # already in order
+        while (li < ri) and (not _compare(lst[ri], pivot, key=key, cmp=cmp)):
+            ri -= 1  # already in order
+        if li != ri:
+            lst[li], lst[ri] = lst[ri], lst[li]
+    _quick_sort(lst, lidx, ri - 1, key=key, cmp=cmp)
+    _quick_sort(lst, ri, ridx, key=key, cmp=cmp)
 
 
 def quick_sort(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -71,7 +64,7 @@ def quick_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -79,10 +72,8 @@ def quick_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
-
-    lst = list(seq)
+    lst = list(it)
     if (size := len(lst)) > 1:
         cmp = gt if reverse else lt
         _quick_sort(lst, 0, size - 1, key=key, cmp=cmp)
