@@ -5,14 +5,14 @@ References:
 - https://en.wikipedia.org/wiki/Selection_sort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 from operator import gt, lt
 
-from adspy.algorithms.sorting.common import validate_key_arg
+from adspy.algorithms.sorting.misc import validate_key_arg
 
 
 def selection_sort(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -21,7 +21,7 @@ def selection_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -29,18 +29,22 @@ def selection_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
 
-    lst = list(seq)
-    if (size := len(lst)) < 2:
-        return lst
-    op = gt if reverse else lt
-    for idx in range(size):
-        imin = idx
-        for jdx in range(idx + 1, size):
-            if op(key(lst[jdx]), key(lst[imin])):
-                imin = jdx
-        if imin != idx:
-            lst[idx], lst[imin] = lst[imin], lst[idx]
-    return lst
+    seq = list(it)
+    size = len(seq)  # O(1)
+    op = lt if reverse else gt
+
+    for i in range(size):
+        imin = i
+        for j in range(i + 1, size):
+            if op(key(seq[imin]), key(seq[j])):
+                imin = j
+        # leave only this line and unstable version is done
+        # seq[i], seq[imin] = seq[imin], seq[i]  # noqa: ERA001
+        if i != imin:
+            minval = seq[imin]
+            for k in range(imin, i, -1):
+                seq[k] = seq[k - 1]
+            seq[i] = minval
+    return seq

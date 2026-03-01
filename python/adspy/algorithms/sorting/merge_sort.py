@@ -5,9 +5,9 @@ References:
 - https://en.wikipedia.org/wiki/Merge_sort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 
-from adspy.algorithms.sorting.common import merge, validate_key_arg
+from adspy.algorithms.sorting.misc import merge, validate_key_arg
 
 
 def _merge_sort(
@@ -17,17 +17,16 @@ def _merge_sort(
     reverse: bool = False,
 ) -> list:
     """The actual recursive implementation."""
-
     if (size := len(lst)) < 2:
         return lst
     mid = size // 2
     left_half = _merge_sort(lst[:mid], key, reverse=reverse)
     right_half = _merge_sort(lst[mid:], key, reverse=reverse)
-    return merge(left_half, right_half, key, reverse=reverse)
+    return merge(left_half, right_half, key, desc=reverse)
 
 
 def merge_sort(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -36,7 +35,7 @@ def merge_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -44,10 +43,5 @@ def merge_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
-
-    lst = list(seq)
-    if len(lst) > 1:
-        lst = _merge_sort(lst, key=key, reverse=reverse)
-    return lst
+    return _merge_sort(list(it), key=key, reverse=reverse)

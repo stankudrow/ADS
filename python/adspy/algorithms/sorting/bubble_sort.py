@@ -5,14 +5,14 @@ References:
 - https://en.wikipedia.org/wiki/Bubble_sort
 """
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable
 from operator import gt, lt
 
-from adspy.algorithms.sorting.common import validate_key_arg
+from adspy.algorithms.sorting.misc import validate_key_arg
 
 
 def bubble_sort(
-    seq: Sequence,
+    it: Iterable,
     key: None | Callable = None,
     *,
     reverse: bool = False,
@@ -21,7 +21,7 @@ def bubble_sort(
 
     Parameters
     ----------
-    seq : Sequence
+    it : Iterable
     key : None | Callable, default None
     reverse : bool, default False
 
@@ -29,20 +29,19 @@ def bubble_sort(
     -------
     list
     """
-
     key = validate_key_arg(key)
 
-    lst = list(seq)
-    if (size := len(lst)) < 2:
-        return lst
+    seq = list(it)
+    size = len(seq)  # O(1)
     op = lt if reverse else gt
-    while True:
+
+    for _ in range(size):
         swapped = False
-        for idx in range(1, size):
-            if op(key(lst[idx - 1]), key(lst[idx])):
-                lst[idx - 1], lst[idx] = lst[idx], lst[idx - 1]
+        for j in range(1, size):
+            if op(key(seq[j - 1]), key(seq[j])):
+                seq[j - 1], seq[j] = seq[j], seq[j - 1]
                 swapped = True
         if not swapped:
             break
         size -= 1
-    return lst
+    return seq
