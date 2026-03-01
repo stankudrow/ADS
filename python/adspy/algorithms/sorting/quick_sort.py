@@ -10,7 +10,7 @@ from operator import gt, lt
 from random import randint
 from typing import Any
 
-from adspy.algorithms.sorting.common import validate_key_arg
+from adspy.algorithms.sorting.misc import validate_key_arg
 
 
 def _compare(

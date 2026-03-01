@@ -8,7 +8,7 @@ References:
 from collections.abc import Callable, Iterable
 from operator import gt, lt
 
-from adspy.algorithms.sorting.common import validate_key_arg
+from adspy.algorithms.sorting.misc import validate_key_arg
 
 
 def bubble_sort(

@@ -7,7 +7,7 @@ References:
 
 from collections.abc import Callable, Iterable
 
-from adspy.algorithms.sorting.common import merge, validate_key_arg
+from adspy.algorithms.sorting.misc import merge, validate_key_arg
 
 
 def _merge_sort(
@@ -22,7 +22,7 @@ def _merge_sort(
     mid = size // 2
     left_half = _merge_sort(lst[:mid], key, reverse=reverse)
     right_half = _merge_sort(lst[mid:], key, reverse=reverse)
-    return merge(left_half, right_half, key, reverse=reverse)
+    return merge(left_half, right_half, key, desc=reverse)
 
 
 def merge_sort(

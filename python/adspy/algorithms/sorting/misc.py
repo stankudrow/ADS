@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable
-from operator import gt, lt
+from operator import ge, le
 from typing import Any, cast
 
 
@@ -17,7 +17,7 @@ def merge(
     it2: Iterable,
     key: None | Callable = None,
     *,
-    reverse: bool = False,
+    desc: bool = False,
 ) -> list:
     """Returns the merged list from two sequences.
 
@@ -26,20 +26,21 @@ def merge(
     it1 : Iterable
     it2 : Iterable
     key : None | Callable, default None
-    reverse : bool, default False
+    desc : bool, default False
 
     Returns
     -------
     list
     """
     key = validate_key_arg(key)
-    op = gt if reverse else lt
+    op = ge if desc else le
 
     merged = []
     seq1, seq2 = map(list, (it1, it2))
     i, j = 0, 0
     while i < len(seq1) and j < len(seq2):
-        if op(key(item1 := seq1[i]), key(item2 := seq2[j])):
+        item1, item2 = seq1[i], seq2[j]
+        if op(key(item1), key(item2)):
             merged.append(item1)
             i += 1
         else:

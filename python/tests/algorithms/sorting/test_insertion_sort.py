@@ -10,6 +10,8 @@ import pytest
 
 from adspy.algorithms.sorting.insertion_sort import insertion_sort
 
+sort = insertion_sort
+
 
 @pytest.mark.parametrize(
     "seq",
@@ -34,10 +36,12 @@ from adspy.algorithms.sorting.insertion_sort import insertion_sort
         True,
     ],
 )
-def test_insertion_sort(seq: Sequence, key: None | Callable, reverse: bool):
+def test_insertion_sort(
+    seq: Sequence, key: None | Callable, reverse: bool
+) -> None:
     lst = list(seq)
 
-    result = insertion_sort(lst, key=key, reverse=reverse)
+    result = sort(lst, key=key, reverse=reverse)
     expected = sorted(lst, key=key, reverse=reverse)
 
     assert result == expected
@@ -47,6 +51,8 @@ def test_insertion_sort(seq: Sequence, key: None | Callable, reverse: bool):
     ("seq", "key", "expectation"),
     [
         ([0, 1, -1], None, does_not_raise()),
+        ([0, 1, -1], abs, does_not_raise()),
+        ([0, -1, 2, -2], lambda x: x * x, does_not_raise()),
         (
             [(2, 1), (3, 4), (5, -5), (0, 2)],
             itemgetter(-1),
@@ -56,7 +62,7 @@ def test_insertion_sort(seq: Sequence, key: None | Callable, reverse: bool):
             (0, 1, -1),
             abs,
             pytest.raises(AssertionError),
-            marks=pytest.mark.xfail(reason="key failed to sort"),
+            marks=pytest.mark.xfail(reason="sort is unstable"),
         ),
         pytest.param(
             [0],
@@ -66,19 +72,27 @@ def test_insertion_sort(seq: Sequence, key: None | Callable, reverse: bool):
         ),
     ],
 )
-def test_insertion_sort_key(
+def test_sort_key(
     seq: Sequence, key: None | Callable, expectation: AbstractContextManager
-):
+) -> None:
     lst = list(seq)
     with expectation:
-        result = insertion_sort(lst, key=key)
+        result = sort(lst, key=key)
         expected = sorted(lst, key=key)
         assert result == expected
 
 
-def test_insertion_sort_purity():
+def test_sort_key_reverse() -> None:
+    seq = [4, -1, 0, -2, 2, 1, 3]
+    key = abs
+    assert sort(seq, key=key, reverse=True) == sorted(
+        seq, key=key, reverse=True
+    )
+
+
+def test_sort_purity() -> None:
     sample = random.sample(range(1, 100, 2), 15)
     sample_dup = sample.copy()
 
-    assert insertion_sort(sample) == sorted(sample)
+    assert sort(sample) == sorted(sample)
     assert sample == sample_dup
