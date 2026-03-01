@@ -56,12 +56,6 @@ def test_merge_sort(seq: Sequence, key: None | Callable, reverse: bool) -> None:
             itemgetter(-1),
             does_not_raise(),
         ),
-        # pytest.param(
-        #     (0, 1, -1),
-        #     abs,
-        #     does_not_raise(),
-        #     marks=pytest.mark.xfail(reason="sort is unstable"),
-        # ),
         pytest.param(
             [0],
             5,
