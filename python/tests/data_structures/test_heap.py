@@ -40,7 +40,7 @@ class TestMinHeap:
         ],
     )
     def test_push(self, items: Iterable, min_heap: Heap) -> None:
-        heapq_heap = []
+        heapq_heap: list = []
 
         for item in items:
             min_heap.push(item)
@@ -60,7 +60,7 @@ class TestMinHeap:
     )
     def test_extend(self, items: Iterable, min_heap: Heap) -> None:
         min_heap.extend(items)
-        heapq_heap = []
+        heapq_heap: list = []
         for item in items:
             heapq.heappush(heapq_heap, item)
 
@@ -82,7 +82,7 @@ class TestMinHeap:
     def test_pop(self, items: Iterable, min_heap: Heap) -> None:
         min_heap.extend(items)
 
-        heapq_heap = []
+        heapq_heap: list = []
         for item in items:
             heapq.heappush(heapq_heap, item)
 
