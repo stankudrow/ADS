@@ -1,5 +1,17 @@
 # Python Algorithms and Data Structures
 
+## v0.7.0
+
+- Add the `Heap` (max and min) data structure.
+- Add the `heap_sort`.
+- Update docstrings.
+- Update imports (searching algorithms).
+- Update tests.
+
+Infrastructure:
+
+- pre-commit is removed in favour of CI/CD
+
 ## v0.6.0
 
 Reconsider linked lists:
@@ -13,66 +25,52 @@ Reconsider linked lists:
 
 Fixes the v0.4.0 with some breaking changes.
 
-Added:
-
-- add the `rotate` method to the Deque.
-
-Changed:
-
+- Add the `rotate` method to the Deque.
 - Make the Deque's `__repr__` method and the `maxlen` property more consistent with the Python's `deque`.
 - Reorganise modules.
 - Simplify tests.
-- Groom comments for Justfile recipes.
+- Groom the doc comments for "Justfile" recipes.
 
-## v0.4.0 (discouraged)
+Bug: the v0.4.1 in the "uv.lock" file - not critical, but inconvenient.
 
-Notes:
+## v0.4.0 (DISCOURAGED)
 
-- the implementation of the Deque data structure is incomplete (not `rotate`) and inconsistent (`maxlen` and `__repr__`)/
+The implementation of the Deque data structure:
 
-Added:
+- is incomplete because the `rotate` method implementation is missing
+- has discrepancy in comparison with the standard `deque` structure.
 
+Please have a look at the v0.5.0 changelog.
+
+Code:
+
+- Add the "Deque" data structure that enjoys the DoublyLinkedList under the hood.
 - Add `__(i)add__`, `__(i)mul__` operations, `__copy__`, `index` and comparision operations via `functools.total_ordering`.
-- Deque data structure (uses DoublyLinkedList).
-- Add more "ruff" rules.
-
-Changed:
-
-- Major updates on DoublyLinkedList.
-- Update imports.
+- Update `DoublyLinkedList` (major fixes).
 - Lint the `quick_sort` function.
+- Update imports.
+
+Infrastructure:
+
 - Replace "Makefile" with "Justfile".
-- Update GHA workflow.
+- Update the GHA workflow.
 - Update tests.
 - Update dependencies.
+- Add more "ruff" rules.
 
 ## v0.3.0
 
-Added:
-
-- Ruff's "F" (pyflakes) rules
-
-Changed:
-
-- `__reversed__()` protocol for the `DoublyLinkedList` data structure
+- Add "F" (pyflakes) rules in effect.
+- Change the `__reversed__` method for the `DoublyLinkedList` data structure.
 
 ## v0.2.0
 
-Added:
-
-- `mypy` type checker support
-- the `DoublyLinkedList` data structure
-
-Changed
-
-- Extend the set of `ruff` rules
-- The code linted in accordance with `mypy` and `ruff` rules.
+- Add "mypy" type checker support.
+- Add the `DoublyLinkedList` data structure.
+- Extend the set of "ruff" rules
+- Lint the code with "mypy" and "ruff".
 
 ## v0.1.0
-
-The project is an (pip-)installable package.
-
-Added:
 
 - Common:
   - Python 3.10 as the minimum version.
@@ -83,6 +81,7 @@ Added:
   - Git hooks via [pre-commit>=4.1.0](https://pre-commit.com/);
   - Project command (line) automation via [GNU make](https://www.gnu.org/software/make/) (if available).
   - GitHub Actions enabled.
+  - The "adspy" project is installable via Python package managers.
 
 - Algorithms:
   - Sorting:

@@ -13,6 +13,7 @@ from adspy.algorithms.sorting.misc import validate_key_arg
 
 def selection_sort(
     it: Iterable,
+    /,
     key: None | Callable = None,
     *,
     reverse: bool = False,

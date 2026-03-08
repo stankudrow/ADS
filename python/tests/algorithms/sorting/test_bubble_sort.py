@@ -8,7 +8,7 @@ from operator import itemgetter
 
 import pytest
 
-from adspy.algorithms.sorting.bubble_sort import bubble_sort
+from adspy.algorithms.sorting import bubble_sort
 
 sort = bubble_sort
 

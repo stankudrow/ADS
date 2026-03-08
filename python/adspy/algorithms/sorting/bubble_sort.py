@@ -13,6 +13,7 @@ from adspy.algorithms.sorting.misc import validate_key_arg
 
 def bubble_sort(
     it: Iterable,
+    /,
     key: None | Callable = None,
     *,
     reverse: bool = False,

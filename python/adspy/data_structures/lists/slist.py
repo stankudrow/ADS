@@ -1,4 +1,9 @@
-"""Singly linked list data structure."""
+"""Singly linked list data structure.
+
+References
+----------
+- https://en.wikipedia.org/wiki/Linked_list
+"""
 
 from array import array
 from collections import OrderedDict
@@ -273,7 +278,7 @@ class SinglyLinkedList(MutableSequence):
             yield node
             node = node.next
 
-    def append(self, value: Any, /) -> None:
+    def append(self, value: Any) -> None:
         """Append (add to the end) the value.
 
         Parameters
@@ -312,7 +317,7 @@ class SinglyLinkedList(MutableSequence):
         """
         return type(self)(self)
 
-    def count(self, value: Any, /) -> int:
+    def count(self, value: Any) -> int:
         """Return the number of occurrences of the value.
 
         Parameters
@@ -329,18 +334,18 @@ class SinglyLinkedList(MutableSequence):
                 cnt += 1
         return cnt
 
-    def extend(self, it: Iterable, /) -> None:
+    def extend(self, values: Iterable) -> None:
         """Append the items from the `it`erable.
 
         Parameters
         ----------
-        it : Iterable
+        values : Iterable
 
         Returns
         -------
         None
         """
-        for item in it:
+        for item in values:
             self.append(item)
 
     def extendleft(self, it: Iterable, /) -> None:

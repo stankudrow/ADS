@@ -16,14 +16,11 @@ check:
 	uv run ruff check
 	uv run mypy
 
-# format the code
-fmt *files=".":
-	uv run ruff format
-
 # format and lint the code
-lint: fmt
-	uv run ruff check --fix .
+lint *files=".":
+	uv run ruff format {{ files }}
+	uv run ruff check --fix {{ files }}
 
 # run the tests
-test *files=".":
-	uv run pytest {{files}}
+test *params=".":
+	uv run pytest {{ params }}

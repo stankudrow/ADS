@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from adspy.data_structures import Deque
+from adspy.data_structures.deque import Deque
 
 
 def test_is_mutable_sequence() -> None:
@@ -326,3 +326,63 @@ def test_rotate(lst: list, ns: list[int]) -> None:
         deq.rotate(n)
 
         assert dq == deq
+
+
+def test_comparisons() -> None:
+    assert Deque([]) == Deque([])
+    assert Deque([1]) == Deque([1])
+
+    assert Deque([2]) != Deque([])
+    assert Deque([2]) != Deque([1])
+
+    assert Deque([1]) < Deque([2])
+    assert Deque([]) < Deque([1])
+    assert Deque([1, 2]) < Deque([2])
+
+    assert Deque([2]) > Deque([1])
+    assert Deque([2]) > Deque([])
+    assert Deque([2, 1]) > Deque([-1, 0, 1])
+
+    assert Deque([]) <= Deque([2, 1])
+    assert Deque([2, 1]) <= Deque([2, 1])
+    assert Deque([2, 1]) <= Deque([3])
+
+    assert Deque([1, 2]) >= Deque([])
+    assert Deque([1, 2]) >= Deque([1, 2])
+    assert Deque([2]) >= Deque([1, 2])
+
+
+@pytest.mark.parametrize(
+    ("it", "key", "expectation"),
+    [
+        ([], 0, pytest.raises(IndexError)),
+        ([1], 0, does_not_raise()),
+        ([1], -1, does_not_raise()),
+        ([], slice(0, 3, 1), does_not_raise()),
+        ([3, 4, 5], slice(0, 3, 2), does_not_raise()),
+    ],
+)
+def test_getitem(
+    it: Iterable,
+    key: int | slice,
+    expectation: AbstractContextManager,
+):
+    lst = list(it)
+    dq = Deque(it)
+
+    with expectation:
+        if isinstance(key, int):
+            assert lst[key] == dq[key]
+        else:
+            assert lst[key] == list(dq[key])
+
+
+@pytest.mark.parametrize(
+    ("it", "answer"),
+    [
+        ([], "Deque([])"),
+        ([3, 4, 1], "Deque([3, 4, 1])"),
+    ],
+)
+def test_repr(it: Iterable, answer: str) -> None:
+    assert repr(Deque(it)) == answer

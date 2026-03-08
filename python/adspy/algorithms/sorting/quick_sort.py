@@ -56,6 +56,7 @@ def _quick_sort(
 
 def quick_sort(
     it: Iterable,
+    /,
     key: None | Callable = None,
     *,
     reverse: bool = False,

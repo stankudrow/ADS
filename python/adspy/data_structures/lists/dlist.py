@@ -1,4 +1,9 @@
-"""Doubly linked list data structure."""
+"""Doubly linked list data structure.
+
+References
+----------
+- https://en.wikipedia.org/wiki/Doubly_linked_list
+"""
 
 from array import array
 from collections import OrderedDict
@@ -277,7 +282,7 @@ class DoublyLinkedList(MutableSequence):
             yield node
             node = node.next
 
-    def append(self, value: Any, /) -> None:
+    def append(self, value: Any) -> None:
         """Append (add to the end) the value.
 
         Parameters
@@ -318,7 +323,7 @@ class DoublyLinkedList(MutableSequence):
         """
         return type(self)(self)
 
-    def count(self, value: Any, /) -> int:
+    def count(self, value: Any) -> int:
         """Return the number of occurrences of the value.
 
         Parameters
@@ -335,18 +340,18 @@ class DoublyLinkedList(MutableSequence):
                 cnt += 1
         return cnt
 
-    def extend(self, it: Iterable, /) -> None:
+    def extend(self, values: Iterable) -> None:
         """Append the items from the `it`erable.
 
         Parameters
         ----------
-        it : Iterable
+        values : Iterable
 
         Returns
         -------
         None
         """
-        for item in it:
+        for item in values:
             self.append(item)
 
     def extendleft(self, it: Iterable, /) -> None:
@@ -407,7 +412,7 @@ class DoublyLinkedList(MutableSequence):
         msg = f"no {value} in the list"
         raise ValueError(msg) from None
 
-    def insert(self, index: int, value: Any, /) -> None:
+    def insert(self, index: int, value: Any) -> None:
         """Insert a value in the list at the given index.
 
         Examples
@@ -538,7 +543,7 @@ class DoublyLinkedList(MutableSequence):
         self._head = node
         self._length += 1
 
-    def remove(self, value: Any, /) -> None:
+    def remove(self, value: Any) -> None:
         """Remove the first occurence of the value.
 
         Parameters
