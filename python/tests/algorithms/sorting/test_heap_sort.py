@@ -1,12 +1,12 @@
-"""Test the "Selection sort" implementation(s)."""
+"""Test the "Bubble sort" implementation(s)."""
 
 from collections.abc import Callable, Sequence
 
 import pytest
 
-from adspy.algorithms.sorting.selection_sort import selection_sort
+from adspy.algorithms.sorting import heap_sort
 
-sort = selection_sort
+sort = heap_sort
 
 
 @pytest.mark.parametrize(

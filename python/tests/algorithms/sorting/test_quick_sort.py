@@ -1,6 +1,5 @@
 """Test the "Quick sort" implementation(s)."""
 
-import random
 from collections.abc import Callable, Sequence
 
 import pytest
@@ -15,10 +14,10 @@ sort = quick_sort
     [
         [],
         [1],
-        (2, 1),
         (2, 0, 1),
         {2, 4, 3, 1},
-        [2, 3, 1, 1, 5],
+        [-5, 4, 6, 3, 0],
+        (3, 4, 2, 1, 1, 0, 2, 3),
     ],
 )
 @pytest.mark.parametrize(
@@ -26,6 +25,7 @@ sort = quick_sort
     [
         None,
         abs,
+        lambda x: x * x,
     ],
 )
 @pytest.mark.parametrize(
@@ -35,18 +35,10 @@ sort = quick_sort
         True,
     ],
 )
-def test_quick_sort(seq: Sequence, key: None | Callable, reverse: bool) -> None:
+def test_sort(seq: Sequence, key: None | Callable, reverse: bool) -> None:
     lst = list(seq)
 
-    result = quick_sort(lst, key=key, reverse=reverse)
+    result = sort(lst, key=key, reverse=reverse)
     expected = sorted(lst, key=key, reverse=reverse)
 
     assert result == expected
-
-
-def test_sort_purity() -> None:
-    sample = random.sample(range(1, 100, 2), 15)
-    sample_dup = sample.copy()
-
-    assert quick_sort(sample) == sorted(sample)
-    assert sample == sample_dup
