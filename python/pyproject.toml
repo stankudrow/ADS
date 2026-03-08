@@ -147,6 +147,7 @@ fixable = [
 "tests/*.py" = [
     "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/
     "D",
+    "ERA001",
     "FBT001",  # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
     "PT011",  # `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
 ]
