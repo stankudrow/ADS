@@ -26,6 +26,10 @@ class Heap:
     The traversal order is:
     - top-to-bottom across levels;
     - left-to-right within each level.
+
+    A Heap can be used ad an implementation detail for priority queues:
+    - accessing min-max is O(1)
+    - inserting/deleting is O(log n)
     """
 
     __slots__ = ("_c", "_cmp")

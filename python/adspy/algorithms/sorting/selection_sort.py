@@ -1,7 +1,7 @@
 """The "Selection sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Selection_sort
 """
 

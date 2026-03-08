@@ -2,7 +2,7 @@
 
 References
 ----------
-- ...
+- https://en.wikipedia.org/wiki/Double-ended_queue
 """
 
 from collections.abc import Iterable, Iterator, MutableSequence

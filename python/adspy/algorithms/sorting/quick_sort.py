@@ -1,7 +1,7 @@
 """The "Quick sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Quicksort
 """
 

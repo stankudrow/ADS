@@ -1,7 +1,7 @@
 """The "Bubble sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Bubble_sort
 """
 

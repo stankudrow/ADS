@@ -1,7 +1,7 @@
 """The "Insertion sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Insertion_sort
 """
 
