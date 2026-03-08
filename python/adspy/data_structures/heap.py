@@ -45,6 +45,9 @@ class Heap:
     def __eq__(self, other: object) -> bool:
         return self._c == other
 
+    def __hash__(self) -> int:
+        return hash(self._c)
+
     def __len__(self) -> int:
         return len(self._c)
 

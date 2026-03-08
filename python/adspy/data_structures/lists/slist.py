@@ -14,7 +14,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from adspy.algorithms.sorting import merge_sort
+from adspy.algorithms.sorting.merge_sort import merge_sort
 
 
 class _SinglyLinkedNode:
@@ -26,8 +26,13 @@ class _SinglyLinkedNode:
         self.value = value
         self._next: _SinglyLinkedNode | None = None
 
-    def __eq__(self, value: object) -> bool:
-        return bool(self.value == value)
+    def __hash__(self) -> int:
+        return hash((self.value, id(self._next)))
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, _SinglyLinkedNode):
+            return self.value == other.value and self._next is other._next
+        return NotImplemented
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
@@ -97,8 +102,7 @@ class SinglyLinkedList(MutableSequence):
         try:
             index_offset = 0
             for idx in indices:
-                idx -= index_offset
-                self.pop(idx)
+                self.pop(idx - index_offset)
                 index_offset += 1  # noqa: SIM113
         except IndexError:
             pass
@@ -127,6 +131,9 @@ class SinglyLinkedList(MutableSequence):
         if isinstance(other, Iterable):
             return tuple(self) == tuple(other)
         return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(tuple(self))
 
     def __iadd__(self, other: Iterable) -> Self:
         self.extend(other)

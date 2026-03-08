@@ -65,6 +65,9 @@ class Deque:
     def __eq__(self, other: object) -> bool:
         return self._lst == other
 
+    def __hash__(self) -> int:
+        return hash(tuple(self))
+
     def __iadd__(self, other: Iterable) -> Self:
         self.extend(other)
         return self
