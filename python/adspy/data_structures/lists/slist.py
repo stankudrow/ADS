@@ -159,7 +159,7 @@ class SinglyLinkedList(MutableSequence):
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
-        it = tuple(self)
+        it = list(self)
         return f"{cls_name}({it})"
 
     def __reversed__(self) -> Iterator:
@@ -199,6 +199,9 @@ class SinglyLinkedList(MutableSequence):
         new_list.extend(iterator)
         self.clear()
         self.extend(new_list)
+
+    def __str__(self) -> str:
+        return str(list(self))
 
     @property
     def _pretail(self) -> None | _SinglyLinkedNode:

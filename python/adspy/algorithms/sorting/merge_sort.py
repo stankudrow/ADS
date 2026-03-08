@@ -20,7 +20,6 @@ def _merge_sort(
     """The actual recursive implementation."""
     if (size := len(lst)) < 2:
         return lst
-
     mid = size // 2
     left_half = _merge_sort(lst[:mid], key, reverse=reverse)
     right_half = _merge_sort(lst[mid:], key, reverse=reverse)

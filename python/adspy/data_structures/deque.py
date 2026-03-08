@@ -99,6 +99,9 @@ class Deque:
     def __setitem__(self, key: int | slice, value: Any) -> None:
         self._lst[key] = value
 
+    def __str__(self) -> str:
+        return str(list(self))
+
     def append(self, value: Any, /) -> None:
         """Append the value."""
         # must be zero because maxlen can return None

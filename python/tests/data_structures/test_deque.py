@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from adspy.data_structures.deque import Deque
+from adspy.data_structures import Deque
 
 
 def test_is_mutable_sequence() -> None:

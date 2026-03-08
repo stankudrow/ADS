@@ -207,6 +207,9 @@ class DoublyLinkedList(MutableSequence):
         self.clear()
         self.extend(new_list)
 
+    def __str__(self) -> str:
+        return str(list(self))
+
     def _detach(self, node: None | _DoublyLinkedNode) -> Any:
         if not node:
             return None
