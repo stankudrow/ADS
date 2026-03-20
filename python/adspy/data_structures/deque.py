@@ -1,4 +1,9 @@
-"""Queue data structures."""
+"""Deque data structure.
+
+References
+----------
+- https://en.wikipedia.org/wiki/Double-ended_queue
+"""
 
 from collections.abc import Iterable, Iterator, MutableSequence
 from functools import total_ordering
@@ -53,10 +58,15 @@ class Deque:
         del self._lst[key]
 
     def __getitem__(self, key: int | slice) -> Any:
+        if isinstance(key, int):
+            return self._lst[key]
         return type(self)(self._lst[key])
 
     def __eq__(self, other: object) -> bool:
         return self._lst == other
+
+    def __hash__(self) -> int:
+        return hash(tuple(self))
 
     def __iadd__(self, other: Iterable) -> Self:
         self.extend(other)
@@ -69,7 +79,7 @@ class Deque:
             self.extend(items)
         return self
 
-    def __iter__(self) -> Iterator[Any]:
+    def __iter__(self) -> Iterator:
         yield from self._lst
 
     def __len__(self) -> int:
@@ -87,13 +97,17 @@ class Deque:
         return f"{cls_name}({it})"
 
     def __reversed__(self) -> Iterator:
-        yield from reversed(self._lst)
+        yield from reversed(list(self))
 
     def __setitem__(self, key: int | slice, value: Any) -> None:
         self._lst[key] = value
 
+    def __str__(self) -> str:
+        return str(list(self))
+
     def append(self, value: Any, /) -> None:
         """Append the value."""
+        # must be zero because maxlen can return None
         if self.maxlen == 0:
             return
         if len(self) == self.maxlen:

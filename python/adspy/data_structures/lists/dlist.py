@@ -1,4 +1,9 @@
-"""Doubly linked list data structure."""
+"""Doubly linked list data structure.
+
+References
+----------
+- https://en.wikipedia.org/wiki/Doubly_linked_list
+"""
 
 from array import array
 from collections import OrderedDict
@@ -9,7 +14,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from adspy.algorithms.sorting import merge_sort
+from adspy.algorithms.sorting.merge_sort import merge_sort
 
 
 class _DoublyLinkedNode:
@@ -22,8 +27,13 @@ class _DoublyLinkedNode:
         self._prev: _DoublyLinkedNode | None = None
         self._next: _DoublyLinkedNode | None = None
 
-    def __eq__(self, value: object) -> bool:
-        return bool(self.value == value)
+    def __hash__(self) -> int:
+        return hash((self.value, id(self._next)))
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, _DoublyLinkedNode):
+            return self.value == other.value and self._next is other._next
+        return NotImplemented
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
@@ -99,8 +109,7 @@ class DoublyLinkedList(MutableSequence):
         try:
             index_offset = 0
             for idx in indices:
-                idx -= index_offset
-                self.pop(idx)
+                self.pop(idx - index_offset)
                 index_offset += 1  # noqa: SIM113
         except IndexError:
             pass
@@ -129,6 +138,9 @@ class DoublyLinkedList(MutableSequence):
         if isinstance(other, Iterable):
             return tuple(self) == tuple(other)
         return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(tuple(self))
 
     def __iadd__(self, other: Iterable) -> Self:
         self.extend(other)
@@ -201,6 +213,9 @@ class DoublyLinkedList(MutableSequence):
         new_list.extend(iterator)
         self.clear()
         self.extend(new_list)
+
+    def __str__(self) -> str:
+        return str(list(self))
 
     def _detach(self, node: None | _DoublyLinkedNode) -> Any:
         if not node:
@@ -277,7 +292,7 @@ class DoublyLinkedList(MutableSequence):
             yield node
             node = node.next
 
-    def append(self, value: Any, /) -> None:
+    def append(self, value: Any) -> None:
         """Append (add to the end) the value.
 
         Parameters
@@ -318,7 +333,7 @@ class DoublyLinkedList(MutableSequence):
         """
         return type(self)(self)
 
-    def count(self, value: Any, /) -> int:
+    def count(self, value: Any) -> int:
         """Return the number of occurrences of the value.
 
         Parameters
@@ -335,18 +350,18 @@ class DoublyLinkedList(MutableSequence):
                 cnt += 1
         return cnt
 
-    def extend(self, it: Iterable, /) -> None:
+    def extend(self, values: Iterable) -> None:
         """Append the items from the `it`erable.
 
         Parameters
         ----------
-        it : Iterable
+        values : Iterable
 
         Returns
         -------
         None
         """
-        for item in it:
+        for item in values:
             self.append(item)
 
     def extendleft(self, it: Iterable, /) -> None:
@@ -407,7 +422,7 @@ class DoublyLinkedList(MutableSequence):
         msg = f"no {value} in the list"
         raise ValueError(msg) from None
 
-    def insert(self, index: int, value: Any, /) -> None:
+    def insert(self, index: int, value: Any) -> None:
         """Insert a value in the list at the given index.
 
         Examples
@@ -538,7 +553,7 @@ class DoublyLinkedList(MutableSequence):
         self._head = node
         self._length += 1
 
-    def remove(self, value: Any, /) -> None:
+    def remove(self, value: Any) -> None:
         """Remove the first occurence of the value.
 
         Parameters

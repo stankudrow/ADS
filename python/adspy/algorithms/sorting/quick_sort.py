@@ -1,7 +1,7 @@
 """The "Quick sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Quicksort
 """
 
@@ -56,6 +56,7 @@ def _quick_sort(
 
 def quick_sort(
     it: Iterable,
+    /,
     key: None | Callable = None,
     *,
     reverse: bool = False,

@@ -1,7 +1,7 @@
 """The "Merge sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Merge_sort
 """
 
@@ -12,6 +12,7 @@ from adspy.algorithms.sorting.misc import merge, validate_key_arg
 
 def _merge_sort(
     lst: list,
+    /,
     key: Callable | None = None,
     *,
     reverse: bool = False,

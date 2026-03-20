@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from adspy.data_structures.lists import SinglyLinkedList
+from adspy.data_structures import SinglyLinkedList
 
 
 def test_append() -> None:

@@ -1,4 +1,9 @@
-"""Singly linked list data structure."""
+"""Singly linked list data structure.
+
+References
+----------
+- https://en.wikipedia.org/wiki/Linked_list
+"""
 
 from array import array
 from collections import OrderedDict
@@ -9,7 +14,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from adspy.algorithms.sorting import merge_sort
+from adspy.algorithms.sorting.merge_sort import merge_sort
 
 
 class _SinglyLinkedNode:
@@ -21,8 +26,13 @@ class _SinglyLinkedNode:
         self.value = value
         self._next: _SinglyLinkedNode | None = None
 
-    def __eq__(self, value: object) -> bool:
-        return bool(self.value == value)
+    def __hash__(self) -> int:
+        return hash((self.value, id(self._next)))
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, _SinglyLinkedNode):
+            return self.value == other.value and self._next is other._next
+        return NotImplemented
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
@@ -92,8 +102,7 @@ class SinglyLinkedList(MutableSequence):
         try:
             index_offset = 0
             for idx in indices:
-                idx -= index_offset
-                self.pop(idx)
+                self.pop(idx - index_offset)
                 index_offset += 1  # noqa: SIM113
         except IndexError:
             pass
@@ -122,6 +131,9 @@ class SinglyLinkedList(MutableSequence):
         if isinstance(other, Iterable):
             return tuple(self) == tuple(other)
         return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(tuple(self))
 
     def __iadd__(self, other: Iterable) -> Self:
         self.extend(other)
@@ -154,7 +166,7 @@ class SinglyLinkedList(MutableSequence):
 
     def __repr__(self) -> str:
         cls_name = type(self).__name__
-        it = tuple(self)
+        it = list(self)
         return f"{cls_name}({it})"
 
     def __reversed__(self) -> Iterator:
@@ -194,6 +206,9 @@ class SinglyLinkedList(MutableSequence):
         new_list.extend(iterator)
         self.clear()
         self.extend(new_list)
+
+    def __str__(self) -> str:
+        return str(list(self))
 
     @property
     def _pretail(self) -> None | _SinglyLinkedNode:
@@ -273,7 +288,7 @@ class SinglyLinkedList(MutableSequence):
             yield node
             node = node.next
 
-    def append(self, value: Any, /) -> None:
+    def append(self, value: Any) -> None:
         """Append (add to the end) the value.
 
         Parameters
@@ -312,7 +327,7 @@ class SinglyLinkedList(MutableSequence):
         """
         return type(self)(self)
 
-    def count(self, value: Any, /) -> int:
+    def count(self, value: Any) -> int:
         """Return the number of occurrences of the value.
 
         Parameters
@@ -329,18 +344,18 @@ class SinglyLinkedList(MutableSequence):
                 cnt += 1
         return cnt
 
-    def extend(self, it: Iterable, /) -> None:
+    def extend(self, values: Iterable) -> None:
         """Append the items from the `it`erable.
 
         Parameters
         ----------
-        it : Iterable
+        values : Iterable
 
         Returns
         -------
         None
         """
-        for item in it:
+        for item in values:
             self.append(item)
 
     def extendleft(self, it: Iterable, /) -> None:

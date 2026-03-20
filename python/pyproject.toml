@@ -1,6 +1,6 @@
 [project]
 name = "adspy"
-version = "0.6.0"
+version = "0.7.0"
 description = "Algorithms and Data Structures in Python"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -108,6 +108,8 @@ select = [
     "F",  # Pyflakes
     "FA",  # flake8-future-annotations
     "FBT",  # flake8-boolean-trap
+    "FIX",  # flake8-fixme
+    "FLY",  # flynt
     "I",  # isort
     "ICN",  # flake8-import-conventions
     "ISC",  # flake8-implicit-str-concat
@@ -115,9 +117,13 @@ select = [
     "PIE",  # flake8-pie
     "PT",  # pytest-style
     "PYI",  # flake8-pyi
+    "PLE",  # Error
+    # "PLR",  # Refactor
+    "PLW",  # Warning
     "Q",  # flake8-quotes
-    "RSE",  # flake8-raise
     "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    # "RUF",  # Ruff-specific rules
     "SIM",  # flake8-simplify
     "SLF",  # flake8-self
     "SLOT",  # flake8-slots
@@ -125,6 +131,7 @@ select = [
     "T10",  # flake8-debugger
     "T20",  # flake8-print
     "TC",  # flake8-type-checking
+    "TD",  # flake8-todos
     "TID",  # flake8-tidy-imports
     "UP",  # pyupgrade
     "W",  # pycodestyle (Warning)
@@ -147,6 +154,7 @@ fixable = [
 "tests/*.py" = [
     "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/
     "D",
+    "ERA001",
     "FBT001",  # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
     "PT011",  # `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
 ]

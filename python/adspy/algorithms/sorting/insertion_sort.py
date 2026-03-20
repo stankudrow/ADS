@@ -1,7 +1,7 @@
 """The "Insertion sort" algorithm.
 
-References:
-
+References
+----------
 - https://en.wikipedia.org/wiki/Insertion_sort
 """
 
@@ -13,6 +13,7 @@ from adspy.algorithms.sorting.misc import validate_key_arg
 
 def insertion_sort(
     it: Iterable,
+    /,
     key: Callable | None = None,
     *,
     reverse: bool = False,

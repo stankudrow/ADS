@@ -2,7 +2,7 @@ from collections.abc import Iterable
 
 import pytest
 
-from adspy.algorithms.searching.linear_search import linear_search
+from adspy.algorithms.searching import linear_search
 
 
 @pytest.mark.parametrize(
